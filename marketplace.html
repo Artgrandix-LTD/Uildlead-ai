@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071b2b">
+<title>BuildLead Marketplace</title>
+<link rel="icon" type="image/svg+xml" href="./assets/buildlead-logo.svg">
+<style>
+:root{--navy:#071b2b;--ink:#10263b;--yellow:#ffc629;--paper:#f3f6fa;--line:#dce5ee;--muted:#65758a;--green:#176344}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--navy);color:#fff;padding:22px max(18px,calc((100% - 1080px)/2)) 30px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.brand img{width:min(250px,68vw);height:auto;display:block}.top nav{display:flex;gap:16px;flex-wrap:wrap}.top nav a{color:#fff;text-decoration:none;font-weight:700;font-size:14px}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.12;margin:26px 0 10px}header p{color:#d9e4ed;max-width:720px}
+main{max-width:1080px;margin:24px auto;padding:0 16px}section{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(18px,3vw,26px);margin-bottom:18px}
+h2{font-size:22px;margin:0 0 8px}p{color:var(--muted)}label{font-size:13px;font-weight:800;display:block;margin:10px 0 5px}
+input,select,textarea{font:inherit;width:100%;padding:11px 12px;border:1px solid #ccd7e1;border-radius:10px;background:#fff;color:var(--ink)}textarea{min-height:78px;resize:vertical}
+button,.btn{border:0;border-radius:10px;padding:11px 15px;background:var(--yellow);color:var(--navy);font-weight:850;cursor:pointer;text-decoration:none;display:inline-block;margin:6px 6px 0 0}button.secondary{background:#e9eef3}button:disabled{opacity:.5;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.card{border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}.tag{display:inline-block;padding:4px 9px;border-radius:999px;background:#eaf5ef;color:var(--green);font-size:12px;font-weight:800}.notice{background:#fff8e8;border:1px solid #f0dfb7;color:#6e5726;padding:12px 14px;border-radius:12px}.status{padding:10px 0;color:#41566a;white-space:pre-wrap}.hidden{display:none!important}.meta{font-size:13px;color:var(--muted)}footer{text-align:center;padding:24px;color:var(--muted);font-size:13px}
+</style>
+</head><body>
+<header><div class="top"><a class="brand" href="./" aria-label="BuildLead home"><img src="./assets/buildlead-logo.svg" alt="BuildLead"></a><nav><a href="./">Home</a><a href="./lead-request.html">Register a project</a><a href="./contractors.html">Contractor information</a></nav></div>
+<h1>BuildLead project marketplace</h1><p>Verified customer projects can be shared with a limited number of approved contractors. A deal report does not close a project until the landlord confirms it.</p></header>
+<main>
+<section id="authSection"><h2>Sign in or create an account</h2><p>Use your account to access your role-specific marketplace tools. Contractor approval is managed by BuildLead.</p>
+<div class="grid"><div><label for="email">Email</label><input id="email" type="email" autocomplete="email" required><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" minlength="8" required><button id="signIn">Sign in</button><button id="signUp" class="secondary">Create account</button></div><div><label for="role">Account type</label><select id="role"><option value="contractor">Contractor</option><option value="landlord">Landlord</option></select><p class="meta">For security, a new contractor account cannot buy leads until BuildLead approves its contractor profile. A landlord's submitted project must be reviewed and linked to their account before listing.</p></div></div><div id="authStatus" class="status" role="status" aria-live="polite"></div><button id="signOut" class="secondary hidden">Sign out</button></section>
+<section id="marketSection"><h2>Open projects</h2><p>Only verified, approved marketplace listings are returned. The public planning feed is not used as a source of paid customer leads.</p><div class="notice">Payment integration is not activated yet. No card will be charged on this page. Purchases stay unavailable until the server-side Stripe test checkout and signed webhook are configured.</div><div id="projectStatus" class="status" role="status" aria-live="polite">Checking marketplace setup…</div><div id="projects"></div></section>
+<section id="mySection"><h2>My purchases and deal reports</h2><p>Paid purchases will appear here once the secure payment webhook is configured. Contractors can report an agreed deal; the landlord must confirm before the project closes.</p><div id="myStatus" class="status">Sign in to view account-specific information.</div><div id="myItems"></div></section>
+</main><footer>BuildLead · Payment processing is not live · Never share a secret key in browser code.</footer>
+<script src="./supabase-config.js"></script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const cfg=window.BUILDLEAD_SUPABASE;
+const authStatus=document.getElementById('authStatus'),projectStatus=document.getElementById('projectStatus'),projects=document.getElementById('projects'),myStatus=document.getElementById('myStatus'),myItems=document.getElementById('myItems');
+const signOut=document.getElementById('signOut');
+if(!cfg?.url||!cfg?.publishableKey){authStatus.textContent='Supabase is not configured. Marketplace actions are disabled.';projectStatus.textContent='Marketplace unavailable until Supabase is configured.'}
+else {
+ const supabase=createClient(cfg.url,cfg.publishableKey);
+ const say=(el,msg)=>el.textContent=msg;
+ document.getElementById('signIn').onclick=async()=>{const {error}=await supabase.auth.signInWithPassword({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value});say(authStatus,error?error.message:'Signed in.');await refresh()};
+ document.getElementById('signUp').onclick=async()=>{const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value;const {error}=await supabase.auth.signUp({email,password,options:{data:{requested_role:document.getElementById('role').value}}});say(authStatus,error?error.message:'Account created. Check your email if confirmation is enabled. BuildLead must approve contractor accounts and link landlord projects before marketplace use.')};
+ signOut.onclick=async()=>{await supabase.auth.signOut();say(authStatus,'Signed out.');await refresh()};
+ async function refresh(){
+  const {data:{session}}=await supabase.auth.getSession();
+  signOut.classList.toggle('hidden',!session);
+  document.getElementById('authSection').dataset.signedIn=session?'yes':'no';
+  if(!session){say(projectStatus,'Sign in with an approved contractor account to view open projects.');say(myStatus,'Sign in to view purchases and deal reports.');projects.replaceChildren();myItems.replaceChildren();return}
+  const {data,error}=await supabase.rpc('marketplace_open_projects');
+  if(error){say(projectStatus,'Marketplace database is not ready yet. Apply the marketplace SQL migration and complete contractor approval. Details: '+error.message);projects.replaceChildren()}
+  else if(!data?.length){say(projectStatus,'No open verified projects are currently available for this approved contractor account.');projects.replaceChildren()}
+  else {say(projectStatus,data.length+' open project(s). Purchase is disabled until secure test checkout is deployed.');projects.replaceChildren();for(const p of data){const card=document.createElement('article');card.className='card';const h=document.createElement('h3');h.textContent=(p.project_type||'Construction project').replaceAll('_',' ');card.appendChild(h);const d=document.createElement('p');d.textContent=[p.postcode_area||'Area available after approval',p.start_timing?.replaceAll('_',' '),p.budget_range?.replaceAll('_',' '),p.buyers_count+'/'+p.max_contractors+' contractors'].filter(Boolean).join(' · ');card.appendChild(d);const detail=document.createElement('p');detail.textContent=p.project_details||'No further description provided.';card.appendChild(detail);const tag=document.createElement('span');tag.className='tag';tag.textContent='£'+(Number(p.price_pence||2500)/100).toFixed(2)+' per lead · TEST SETUP';card.appendChild(tag);const btn=document.createElement('button');btn.disabled=true;btn.textContent='Payment setup pending';card.appendChild(btn);projects.appendChild(card)}}
+  const {data:purchases,error:purchaseError}=await supabase.from('project_purchases').select('id,project_id,payment_status,amount_pence,currency,created_at').order('created_at',{ascending:false}).limit(50);
+  myItems.replaceChildren();
+  if(purchaseError){say(myStatus,'Purchase history is unavailable until the marketplace migration is applied. '+purchaseError.message);return}
+  say(myStatus,purchases?.length?'Purchase records:':'No purchase records yet.');
+  for(const item of purchases||[]){const card=document.createElement('article');card.className='card';const h=document.createElement('h3');h.textContent='Project purchase';card.appendChild(h);const p=document.createElement('p');p.textContent='Status: '+item.payment_status+' · £'+(item.amount_pence/100).toFixed(2)+' · '+new Date(item.created_at).toLocaleDateString();card.appendChild(p);if(item.payment_status==='paid'){const note=document.createElement('label');note.textContent='Report that you have agreed a deal with the landlord';card.appendChild(note);const textarea=document.createElement('textarea');textarea.maxLength=1000;textarea.placeholder='Optional note for the landlord';card.appendChild(textarea);const btn=document.createElement('button');btn.textContent='Report deal';btn.onclick=async()=>{btn.disabled=true;const {error}=await supabase.rpc('report_project_deal',{p_purchase_id:item.id,p_note:textarea.value});say(myStatus,error?'Could not report deal: '+error.message:'Deal report sent to the landlord for confirmation. The project is not closed until they confirm.');await refresh()};card.appendChild(btn)}myItems.appendChild(card)}
+ }
+ supabase.auth.onAuthStateChange(()=>setTimeout(refresh,0)); await refresh();
+}
+</script></body></html>
