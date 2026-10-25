@@ -3,6 +3,11 @@ name: BuildLead AI - London Lead Scanner
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/scan_planning.py"
+      - ".github/workflows/lead-scan.yml"
   schedule:
     - cron: "17 6 * * 1-5"
 
