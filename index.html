@@ -3,14 +3,131 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BuildLead AI | London</title>
-<style>body{font-family:Arial,sans-serif;max-width:850px;margin:40px auto;padding:20px;background:#f4f7f4;color:#173b34}h1{font-size:42px}section{background:white;padding:22px;border-radius:16px;margin:16px 0}a,button{background:#173b34;color:white;padding:12px 16px;border-radius:8px;text-decoration:none}li{margin:10px 0}</style>
+<title>BuildLead AI | London Construction Leads</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;margin:0;background:#f3f6f4;color:#173b34}
+header{background:#173b34;color:white;padding:28px 20px}
+main{max-width:1100px;margin:24px auto;padding:0 16px}
+h1{margin:0;font-size:32px}
+header p{color:#d5e8df}
+section,.stat{background:white;border-radius:14px;padding:20px;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat strong{display:block;font-size:26px;margin-top:8px}
+input,select{width:100%;padding:12px;border:1px solid #ccd8d1;border-radius:8px;font-size:16px;margin:6px 0 12px}
+label{font-weight:bold;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tag{display:inline-block;background:#e1f2e9;padding:5px 9px;border-radius:20px;font-size:12px}
+.card{border:1px solid #dce6df;padding:16px;border-radius:12px;margin:12px 0;overflow-wrap:anywhere}
+a{color:#176c53}
+small{color:#596b62}
+footer{text-align:center;padding:25px;color:#617168}
+</style>
 </head>
 <body>
-<h1>BuildLead <span style="color:#268267">AI</span></h1>
-<section><h2>Find your next construction job across London.</h2><p>A simple place to organise potential construction, repair and renovation opportunities.</p><a href="mailto:hello@buildlead.ai?subject=BuildLead%20AI%20early%20access">Request early access</a></section>
-<section><h2>Trades we support</h2><ul><li>Repairs and maintenance</li><li>Painting and decorating</li><li>Bathrooms and kitchens</li><li>Property renovations</li><li>Extensions</li><li>Loft conversions</li></ul></section>
-<section><h2>How it works</h2><ol><li>Review public planning data and other permitted sources.</li><li>Identify possible project signals.</li><li>Verify each opportunity before contacting anyone.</li></ol><p><strong>Note:</strong> Planning applications are signals, not guaranteed jobs.</p></section>
+<header>
+<h1>BuildLead <span style="color:#78d5ac">AI</span></h1>
+<p>Construction, renovation and property opportunities across London.</p>
+</header>
+<main>
+<section>
+<h2>London Lead Dashboard</h2>
+<p>Review potential project signals and organise opportunities for your business.</p>
+<div class="stats">
+<div class="stat">Total leads<strong id="total">0</strong></div>
+<div class="stat">Boroughs<strong id="boroughs">0</strong></div>
+<div class="stat">Shown<strong id="shown">0</strong></div>
+</div>
+<p id="status">Loading latest lead data...</p>
+</section>
+<section>
+<h2>Find opportunities</h2>
+<label for="search">Search leads</label>
+<input id="search" placeholder="Try painting, kitchen, postcode or borough">
+<label for="borough">London borough</label>
+<select id="borough"><option value="">All boroughs</option></select>
+<label for="trade">Service</label>
+<select id="trade">
+<option value="">All services</option>
+<option>Painting and Decorating</option>
+<option>Flooring Installation</option>
+<option>Kitchen and Bathroom Renovations</option>
+<option>Plumbing Repairs</option>
+<option>Heating Systems</option>
+<option>Property Extensions</option>
+<option>Roofing Services</option>
+<option>Gardening and Outdoor Improvements</option>
+<option>Carpentry and Joinery</option>
+</select>
+<div id="results"></div>
+</section>
+<section>
+<h2>Services covered</h2>
+<div class="grid">
+<div>🎨 Interior and exterior painting</div>
+<div>🪵 Flooring installation</div>
+<div>🚿 Kitchen and bathroom renovations</div>
+<div>🔧 Tap replacement and plumbing repairs</div>
+<div>♨️ Heating systems</div>
+<div>🏠 Property extensions</div>
+<div>🏗️ Roofing services</div>
+<div>🌳 Gardening and outdoor improvements</div>
+<div>🪚 Carpentry and joinery</div>
+</div>
+</section>
+<section>
+<h2>Who we want to help you find</h2>
+<p>Private homeowners · Construction companies · Property managers · Landlords</p>
+<p>Private jobs and commercial opportunities require additional permitted sources; they are not guaranteed by planning data alone.</p>
+</section>
 <footer>BuildLead AI · London · Early development</footer>
+</main>
+<script>
+const search=document.getElementById('search');
+const borough=document.getElementById('borough');
+const trade=document.getElementById('trade');
+const results=document.getElementById('results');
+const statusText=document.getElementById('status');
+let leads=[];
+function text(v){return v==null?'':String(v)}
+function getBorough(x){return text(x.borough||x.local_authority||x.authority||x.area||'Unknown')}
+function getDescription(x){return text(x.description||x.address||x.site_address||x.title||x.name||'Potential project')}
+function getTrade(x){return text(x.trade||x.category||x.type||x.description||'').toLowerCase()}
+function render(){
+const q=search.value.toLowerCase().trim();
+const b=borough.value;
+const t=trade.value.toLowerCase();
+const filtered=leads.filter(x=>{
+const all=JSON.stringify(x).toLowerCase();
+return (!q||all.includes(q))&&(!b||getBorough(x)===b)&&(!t||getTrade(x).includes(t.split(' ')[0]));
+});
+document.getElementById('shown').textContent=filtered.length;
+results.innerHTML='';
+if(!filtered.length){results.textContent=leads.length?'No matching leads. Try changing your filters.':'No lead data loaded yet.';return}
+filtered.slice(0,100).forEach(x=>{
+const card=document.createElement('article');card.className='card';
+const title=document.createElement('h3');title.textContent=getDescription(x);
+const area=document.createElement('p');area.textContent='Area: '+getBorough(x);
+const detail=document.createElement('p');detail.textContent='Status: '+text(x.status||x.application_status||'Needs verification');
+const tag=document.createElement('span');tag.className='tag';tag.textContent='Potential lead · Verify first';
+card.append(title,area,detail,tag);
+const link=x.url||x.link||x.source_url;
+if(link&&/^https?:\/\//i.test(link)){const p=document.createElement('p');const a=document.createElement('a');a.href=link;a.target='_blank';a.rel='noopener noreferrer';a.textContent='View source';p.appendChild(a);card.appendChild(p)}
+results.appendChild(card);
+});
+}
+search.addEventListener('input',render);
+borough.addEventListener('change',render);
+trade.addEventListener('change',render);
+fetch('./leads/latest-leads.json').then(r=>{if(!r.ok)throw Error('Lead file not available');return r.json()}).then(data=>{
+leads=Array.isArray(data)?data:(data.leads||data.results||data.records||[]);
+document.getElementById('total').textContent=leads.length;
+const names=[...new Set(leads.map(getBorough).filter(x=>x!=='Unknown'))].sort();
+document.getElementById('boroughs').textContent=names.length;
+names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;borough.appendChild(o)});
+statusText.textContent=leads.length?'Latest available lead data loaded. Verify each opportunity before contacting anyone.':'The data file loaded, but no leads were found.';
+render();
+}).catch(()=>{statusText.textContent='Lead data could not be loaded. Check that leads/latest-leads.json exists in the repository.';render()});
+</script>
 </body>
 </html>
