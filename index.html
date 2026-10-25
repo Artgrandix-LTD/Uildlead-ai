@@ -227,7 +227,7 @@ function render() {
   const filtered = leads.filter(record => {
     const allFields = normalise(JSON.stringify(record));
     return (!query || allFields.includes(query)) &&
-      (!selectedBorough || getBorough(record) === selectedBorough) &&
+      (!selectedBorough || normalise(getBorough(record)).includes(normalise(selectedBorough))) &&
       matchesTrade(record, selectedTrade) &&
       matchesPlanningStatus(record, planningStatus.value);
   });
@@ -442,12 +442,15 @@ function applyLeadData(data, sourceLabel) {
   allOption.value = '';
   allOption.textContent = 'All London areas';
   borough.appendChild(allOption);
-  names.forEach(name => {
-    const option = document.createElement('option');
-    option.value = name;
-    option.textContent = name;
-    borough.appendChild(option);
-  });
+  const requestedBoroughs = ['Lambeth', 'Merton', 'Sutton', 'Wandsworth'];
+  [...new Set([...names, ...requestedBoroughs])]
+    .sort((a, b) => a.localeCompare(b))
+    .forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name + (names.includes(name) ? '' : ' · awaiting feed data');
+      borough.appendChild(option);
+    });
   const checkedAt = data && data.checked_at_utc
     ? ' Data last checked: ' + new Date(data.checked_at_utc).toLocaleString()
     : '';
