@@ -31,6 +31,29 @@ SOURCE_FIELDS = [
     "status",
     "url",
     "application_type",
+    "decision",
+    "decision_date",
+    "application_date",
+    "date_received",
+    "applicant_name",
+    "applicant_company",
+    "applicant_email",
+    "applicant_phone",
+    "architect_name",
+    "architect_company",
+    "designer_name",
+    "designer_company",
+    "planning_officer",
+    "latitude",
+    "longitude",
+    "location",
+    "documents",
+    "documents_url",
+    "plans",
+    "plans_url",
+    "drawings",
+    "drawings_url",
+    "application_status",
     "agent_name",
     "agent_company",
     "agent_email",
@@ -43,41 +66,69 @@ SOURCE_FIELDS = [
 ]
 
 def main():
-    payload = {
-        "size": 100,
-        "query": {"match_all": {}},
-        "sort": [
-            {
-                "last_updated": {
-                    "order": "desc",
-                    "unmapped_type": "date",
+    page_size = 100
+    offset = 0
+    hits = []
+
+    # Retrieve records in batches, not just the newest 100.
+    # The API may impose a maximum result window; stop safely if so.
+    while True:
+        payload = {
+            "size": page_size,
+            "from": offset,
+            "query": {"match_all": {}},
+            "sort": [
+                {
+                    "last_updated": {
+                        "order": "desc",
+                        "unmapped_type": "date",
+                    }
                 }
-            }
-        ],
-        "_source": SOURCE_FIELDS,
-    }
-
-    request = urllib.request.Request(
-        API_URL,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Content-Type": "application/json",
-            "X-API-AllowRequest": "be2rmRnt&",
-            "User-Agent": "BuildLeadAI/1.1",
-        },
-        method="POST",
-    )
-
-    try:
-        with urllib.request.urlopen(request, timeout=40) as response:
-            data = json.load(response)
-    except Exception as error:
-        raise SystemExit(
-            "Planning data request failed. Check API access: "
-            + str(error)
+            ],
+            "_source": SOURCE_FIELDS,
+        }
+        request = urllib.request.Request(
+            API_URL,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Content-Type": "application/json",
+                "X-API-AllowRequest": "be2rmRnt&",
+                "User-Agent": "BuildLeadAI/1.2",
+            },
+            method="POST",
         )
+        try:
+            with urllib.request.urlopen(request, timeout=40) as response:
+                data = json.load(response)
+        except Exception as error:
+            if offset == 0:
+                raise SystemExit(
+                    "Planning data request failed. Check API access: "
+                    + str(error)
+                )
+            print(f"Pagination stopped at offset {offset}: {error}")
+            break
 
-    hits = data.get("hits", {}).get("hits", [])
+        batch = data.get("hits", {}).get("hits", [])
+        if not batch:
+            break
+        hits.extend(batch)
+        offset += len(batch)
+        total = data.get("hits", {}).get("total", {})
+        if isinstance(total, dict):
+            total_value = total.get("value")
+            relation = total.get("relation", "eq")
+        else:
+            total_value = total
+            relation = "eq"
+        if len(batch) < page_size:
+            break
+        if isinstance(total_value, int) and relation == "eq" and offset >= total_value:
+            break
+        if offset >= 10000:
+            print("Reached the API's common 10,000-result window limit.")
+            break
+
     matches = []
 
     for hit in hits:
@@ -121,6 +172,13 @@ def main():
 
         item["public_contact"] = public_contact
         item["contact_available"] = bool(public_contact)
+        item["planning_record_url"] = item.get("url") or ""
+        item["documents_available"] = any(
+            item.get(key) for key in (
+                "documents", "documents_url", "plans",
+                "plans_url", "drawings", "drawings_url"
+            )
+        )
 
         matches.append(item)
 
@@ -133,6 +191,10 @@ def main():
         "potential_signals": len(matches),
         "contacts_found": sum(
             1 for item in matches if item["contact_available"]
+        ),
+        "pagination_note": (
+            "Fetched in batches from the source API. Coverage depends on "
+            "the API's available records and maximum result window."
         ),
         "note": (
             "Planning signals are not confirmed jobs. "
