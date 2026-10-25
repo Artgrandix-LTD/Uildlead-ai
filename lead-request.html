@@ -9,9 +9,9 @@
 <style>
 :root{--ink:#172b26;--green:#176b52;--mint:#c7f4df;--paper:#f5f7f2;--line:#dfe8df;--muted:#62736a}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
-header{background:linear-gradient(125deg,#102e27,#20644b);color:#fff;padding:22px max(18px,calc((100% - 760px)/2))}
-header a{color:#c7f4df}main{max-width:760px;margin:28px auto;padding:0 16px 40px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(18px,4vw,30px);box-shadow:0 8px 26px #173d2a0a}
+header{background:linear-gradient(90deg,rgba(7,28,40,.92),rgba(7,28,40,.55)),url(https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1500&q=85) center 55%/cover;color:#fff;padding:22px max(18px,calc((100% - 760px)/2));min-height:185px;display:flex;align-items:flex-start;flex-direction:column;justify-content:center}
+header a{color:#c7f4df}main{max-width:900px;margin:28px auto;padding:0 16px 40px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(18px,4vw,34px);box-shadow:0 18px 55px #173d2a12}.upload-box{display:block;border:2px dashed #b9d8c5;background:#f6fbf7;border-radius:14px;padding:20px;text-align:center;margin-top:8px}.upload-box input{border:0;background:transparent}.photo-preview{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.photo-preview img{width:100px;height:85px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}.benefits{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0 0 18px}.benefit{background:#f4faf5;border:1px solid var(--line);padding:12px;border-radius:12px;font-size:13px;font-weight:700;color:#315b45}
 h1{font-size:clamp(25px,4vw,34px);line-height:1.2;margin:12px 0}p{color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 14px}
 label{display:block;font-weight:700;font-size:14px;margin:12px 0 5px}
@@ -25,7 +25,7 @@ button:disabled{opacity:.6;cursor:wait}.status{padding:12px;border-radius:10px;m
 </head>
 <body>
 <header><a class="back" href="./">← Back to BuildLead AI</a></header>
-<main><section class="panel">
+<main><div class="benefits"><div class="benefit">✓ Tell us what you need</div><div class="benefit">✓ Add project photos</div><div class="benefit">✓ Review before matching</div></div><section class="panel">
   <div style="font-size:12px;letter-spacing:2px;font-weight:800;color:#287454">YOUR PROJECT · YOUR CHOICE</div>
   <h1>Tell us about your building project</h1>
   <p>Share a few details and BuildLead can help route your request to suitable local contractors. Submitting this form does not guarantee a quote or contractor availability.</p>
@@ -49,7 +49,7 @@ button:disabled{opacity:.6;cursor:wait}.status{padding:12px;border-radius:10px;m
         <option value="">Choose budget</option><option value="under_5k">Under £5,000</option><option value="5k_10k">£5,000–£10,000</option><option value="10k_30k">£10,000–£30,000</option><option value="30k_plus">£30,000+</option><option value="unsure">Not sure yet</option>
       </select></div>
     </div>
-    <label for="project_details">Project details (optional)</label><textarea id="project_details" name="project_details" maxlength="2000" placeholder="Describe the work, property type or anything contractors should know."></textarea>
+    <label for="project_details">Project details (optional)</label><textarea id="project_details" name="project_details" maxlength="2000" placeholder="Describe the work, property type or anything contractors should know."></textarea>\n    <label for="project_photos">Upload project photos (optional)</label><div class="upload-box"><div style="font-size:26px">📷</div><strong>Show us the space or work you have in mind</strong><p class="small">Choose up to 5 JPG, PNG or WebP photos, maximum 5 MB each.</p><input id="project_photos" type="file" accept="image/jpeg,image/png,image/webp" multiple><div id="photoPreview" class="photo-preview"></div><p class="small" id="photoNote">Photo preview is available here. Secure photo storage is still being connected, so selected photos are not submitted with this form yet.</p></div>
     <div class="grid">
       <div><label for="full_name">Your name</label><input id="full_name" name="full_name" autocomplete="name" maxlength="100" required></div>
       <div><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" maxlength="254" required></div>
@@ -68,7 +68,7 @@ button:disabled{opacity:.6;cursor:wait}.status{padding:12px;border-radius:10px;m
 'use strict';
 const form = document.getElementById('leadForm');
 const button = document.getElementById('submitButton');
-const statusBox = document.getElementById('formStatus');
+const statusBox = document.getElementById('formStatus');\nconst photoInput = document.getElementById('project_photos');\nconst photoPreview = document.getElementById('photoPreview');\nphotoInput.addEventListener('change', () => {\n  photoPreview.replaceChildren();\n  const files = Array.from(photoInput.files || []);\n  if (files.length > 5) { photoInput.value = ''; showStatus('Please choose no more than 5 photos.', 'err'); return; }\n  for (const file of files) {\n    if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) { photoInput.value = ''; photoPreview.replaceChildren(); showStatus('Use JPG, PNG or WebP images up to 5 MB each.', 'err'); return; }\n    const img = document.createElement('img'); img.alt = 'Selected project photo preview'; img.src = URL.createObjectURL(file); photoPreview.appendChild(img);\n  }\n});
 function showStatus(message, kind) {
   statusBox.textContent = message;
   statusBox.className = 'status show ' + kind;
