@@ -2,6 +2,7 @@
 import json
 import re
 import urllib.request
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -122,13 +123,30 @@ def main():
             },
             method="POST",
         )
-        try:
-            with urllib.request.urlopen(scroll_request, timeout=40) as response:
-                data = json.load(response)
-        except Exception as error:
+        data = None
+        last_error = None
+        for attempt in range(5):
+            try:
+                with urllib.request.urlopen(scroll_request, timeout=60) as response:
+                    data = json.load(response)
+                break
+            except Exception as error:
+                last_error = error
+                # The public gateway can briefly return 503 during bulk reads.
+                # Retry transient errors before giving up; never publish a partial scan.
+                status_code = getattr(error, "code", None)
+                if status_code not in (429, 500, 502, 503, 504) or attempt == 4:
+                    break
+                wait_seconds = 2 ** (attempt + 1)
+                print(
+                    f"Temporary API error ({status_code}) after {len(hits)} records; "
+                    f"retry {attempt + 1}/4 in {wait_seconds}s."
+                )
+                time.sleep(wait_seconds)
+        if data is None:
             raise SystemExit(
                 f"Scroll pagination failed after {len(hits)} records; "
-                f"refusing to publish incomplete results: {error}"
+                f"refusing to publish incomplete results: {last_error}"
             )
 
         scroll_id = data.get("_scroll_id", scroll_id)
