@@ -191,10 +191,11 @@ function getContact(record) {
   const source = record.public_contact && typeof record.public_contact === 'object'
     ? { ...record, ...record.public_contact } : record;
   const fields = [
-    ['Contact name', ['contact_name', 'applicant_name', 'agent_name']],
-    ['Company', ['company_name', 'applicant_company', 'agent_company']],
-    ['Email', ['contact_email', 'email', 'applicant_email', 'agent_email']],
-    ['Phone', ['contact_phone', 'phone', 'telephone', 'applicant_phone', 'agent_phone']]
+    ['Planning agent', ['agent_name', 'contact_name']],
+    ['Agent / professional company', ['agent_company', 'company_name', 'organisation', 'architect_company', 'designer_company']],
+    ['Architect / designer', ['architect_name', 'designer_name']],
+    ['Email', ['agent_email', 'contact_email', 'email']],
+    ['Phone', ['agent_phone', 'contact_phone', 'phone', 'telephone']]
   ];
   return fields
     .map(([label, keys]) => ({
@@ -373,12 +374,12 @@ function showDetails(record, card, button) {
     ['Application date', ['application_date', 'date_received']],
     ['Decision date', ['decision_date']],
     ['Last updated', ['last_updated']],
-    ['Applicant / contact name', ['applicant_name', 'contact_name', 'agent_name']],
-    ['Company', ['applicant_company', 'agent_company', 'company_name', 'organisation']],
+    ['Planning agent / contact', ['agent_name', 'contact_name']],
+    ['Agent / professional company', ['agent_company', 'company_name', 'organisation']],
     ['Architect / designer', ['architect_name', 'designer_name']],
     ['Architect / design company', ['architect_company', 'designer_company']],
-    ['Public email', ['agent_email', 'contact_email', 'applicant_email']],
-    ['Public phone', ['agent_phone', 'contact_phone', 'applicant_phone']]
+    ['Published professional email', ['agent_email', 'contact_email']],
+    ['Published professional phone', ['agent_phone', 'contact_phone']]
   ];
   rows.forEach(([label, keys]) => {
     const value = firstValue(record.public_contact && typeof record.public_contact === 'object'
@@ -392,7 +393,7 @@ function showDetails(record, card, button) {
   });
   const contacts = getContact(record);
   if (!contacts.length) {
-    addText(panel, 'p', 'No public contact details were supplied with this record. Check the official council planning record for a published agent or company contact; private contact details are not guessed.');
+    addText(panel, 'p', 'No professional contact details were supplied in this feed. Open the council planning record and look for the applicant's planning agent, architect or design company. BuildLead does not invent email addresses or phone numbers.');
   }
   const address = firstValue(record, ['site_address', 'address', 'postcode']);
   const boroughName = getBorough(record);
