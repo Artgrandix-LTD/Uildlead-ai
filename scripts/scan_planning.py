@@ -5,7 +5,8 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-API_URL = "https://planningdata.london.gov.uk/api-guest/applications/_search"
+API_BASE = "https://planninglondondatahub.london.gov.uk/api-guest"
+API_URL = API_BASE + "/applications/_search"
 
 KEYWORDS = re.compile(
     r"extension|loft|conversion|renovation|refurbishment|"
@@ -112,7 +113,7 @@ def main():
     while batch and scroll_id and len(hits) < max_records:
         scroll_payload = {"scroll": "1m", "scroll_id": scroll_id}
         scroll_request = urllib.request.Request(
-            "https://planningdata.london.gov.uk/api-guest/_search/scroll",
+            API_BASE + "/_search/scroll",
             data=json.dumps(scroll_payload).encode("utf-8"),
             headers={
                 "Content-Type": "application/json",
@@ -125,18 +126,24 @@ def main():
             with urllib.request.urlopen(scroll_request, timeout=40) as response:
                 data = json.load(response)
         except Exception as error:
-            print(
-                f"Pagination stopped after collecting {len(hits)} records: {error}"
+            raise SystemExit(
+                f"Scroll pagination failed after {len(hits)} records; "
+                f"refusing to publish incomplete results: {error}"
             )
-            break
 
         scroll_id = data.get("_scroll_id", scroll_id)
         batch = data.get("hits", {}).get("hits", [])
+        print(f"Scroll batch returned {len(batch)} records.")
         if not batch:
             break
         remaining = max_records - len(hits)
         hits.extend(batch[:remaining])
 
+    if not scroll_id:
+        raise SystemExit(
+            "Planning API did not return a scroll ID; refusing to publish "
+            "a potentially incomplete scan."
+        )
     if len(hits) >= max_records:
         print(f"Reached the safety cap of {max_records} source records.")
 
