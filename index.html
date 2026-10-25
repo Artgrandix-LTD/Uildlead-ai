@@ -306,11 +306,18 @@ function showDetails(record) {
     ['Application reference', ['lpa_app_no', 'application_reference', 'reference', 'application_ref']],
     ['Address', ['site_address', 'address', 'postcode']],
     ['Application type', ['application_type', 'type']],
-    ['Decision / status', ['status', 'application_status', 'decision']],
-    ['Last updated', ['last_updated', 'decision_date', 'application_date', 'date_received']],
+    ['Decision', ['decision']],
+    ['Decision / status', ['status', 'application_status']],
+    ['Application date', ['application_date', 'date_received']],
+    ['Decision date', ['decision_date']],
+    ['Last updated', ['last_updated']],
     ['Applicant', ['applicant_name', 'contact_name']],
-    ['Agent / architect', ['agent_name', 'architect_name', 'agent_company']],
-    ['Company', ['company_name', 'organisation', 'agent_company']],
+    ['Applicant company', ['applicant_company', 'company_name', 'organisation']],
+    ['Planning agent', ['agent_name']],
+    ['Agent company', ['agent_company']],
+    ['Architect / designer', ['architect_name', 'designer_name']],
+    ['Architect / design company', ['architect_company', 'designer_company']],
+    ['Planning officer', ['planning_officer']],
     ['Public email', ['agent_email', 'contact_email', 'applicant_email']],
     ['Public phone', ['agent_phone', 'contact_phone', 'applicant_phone']]
   ];
@@ -323,6 +330,25 @@ function showDetails(record) {
       projectDetail.appendChild(p);
     }
   });
+  const lat = firstValue(record, ['latitude', 'lat']);
+  const lon = firstValue(record, ['longitude', 'lon', 'lng']);
+  const address = firstValue(record, ['site_address', 'address', 'postcode']);
+  let mapUrl = '';
+  if (lat && lon && Number.isFinite(Number(lat)) && Number.isFinite(Number(lon))) {
+    mapUrl = 'https://www.google.com/maps?q=' + encodeURIComponent(lat + ',' + lon);
+  } else if (address) {
+    mapUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address);
+  }
+  if (mapUrl) {
+    const p = document.createElement('p');
+    const a = document.createElement('a');
+    a.href = mapUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = 'View site on map';
+    p.appendChild(a);
+    projectDetail.appendChild(p);
+  }
   const source = getSource(record);
   if (source) {
     const p = document.createElement('p');
