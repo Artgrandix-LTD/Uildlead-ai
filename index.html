@@ -3,131 +3,294 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173b34">
 <title>BuildLead AI | London Construction Leads</title>
 <style>
 *{box-sizing:border-box}
-body{font-family:Arial,sans-serif;margin:0;background:#f3f6f4;color:#173b34}
+body{font-family:Arial,sans-serif;margin:0;background:#f3f6f4;color:#173b34;line-height:1.5}
 header{background:#173b34;color:white;padding:28px 20px}
 main{max-width:1100px;margin:24px auto;padding:0 16px}
 h1{margin:0;font-size:32px}
 header p{color:#d5e8df}
 section,.stat{background:white;border-radius:14px;padding:20px;margin-bottom:18px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
 .stat strong{display:block;font-size:26px;margin-top:8px}
-input,select{width:100%;padding:12px;border:1px solid #ccd8d1;border-radius:8px;font-size:16px;margin:6px 0 12px}
-label{font-weight:bold;font-size:14px}
+input,select{width:100%;padding:12px;border:1px solid #ccd8d1;border-radius:8px;font-size:16px;margin:6px 0 12px;background:white;color:#173b34}
+label{font-weight:bold;font-size:14px;display:block}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .tag{display:inline-block;background:#e1f2e9;padding:5px 9px;border-radius:20px;font-size:12px}
 .card{border:1px solid #dce6df;padding:16px;border-radius:12px;margin:12px 0;overflow-wrap:anywhere}
 a{color:#176c53}
-small{color:#596b62}
+a:focus,input:focus,select:focus{outline:2px solid #176c53;outline-offset:2px}
+small,.muted{color:#596b62}
+.contact{background:#f1f8f4;padding:12px;border-radius:8px;margin:12px 0}
+.contact p{margin:6px 0}
+.notice{padding:12px;background:#fff8e6;border-radius:8px}
 footer{text-align:center;padding:25px;color:#617168}
+button{padding:10px 14px;border:0;border-radius:8px;background:#176c53;color:white;font-size:15px;cursor:pointer}
 </style>
 </head>
 <body>
 <header>
-<h1>BuildLead <span style="color:#78d5ac">AI</span></h1>
-<p>Construction, renovation and property opportunities across London.</p>
+  <h1>BuildLead <span style="color:#78d5ac">AI</span></h1>
+  <p>Construction, renovation and property opportunities across London.</p>
 </header>
 <main>
-<section>
-<h2>London Lead Dashboard</h2>
-<p>Review potential project signals and organise opportunities for your business.</p>
-<div class="stats">
-<div class="stat">Total leads<strong id="total">0</strong></div>
-<div class="stat">Boroughs<strong id="boroughs">0</strong></div>
-<div class="stat">Shown<strong id="shown">0</strong></div>
-</div>
-<p id="status">Loading latest lead data...</p>
-</section>
-<section>
-<h2>Find opportunities</h2>
-<label for="search">Search leads</label>
-<input id="search" placeholder="Try painting, kitchen, postcode or borough">
-<label for="borough">London borough</label>
-<select id="borough"><option value="">All boroughs</option></select>
-<label for="trade">Service</label>
-<select id="trade">
-<option value="">All services</option>
-<option>Painting and Decorating</option>
-<option>Flooring Installation</option>
-<option>Kitchen and Bathroom Renovations</option>
-<option>Plumbing Repairs</option>
-<option>Heating Systems</option>
-<option>Property Extensions</option>
-<option>Roofing Services</option>
-<option>Gardening and Outdoor Improvements</option>
-<option>Carpentry and Joinery</option>
-</select>
-<div id="results"></div>
-</section>
-<section>
-<h2>Services covered</h2>
-<div class="grid">
-<div>🎨 Interior and exterior painting</div>
-<div>🪵 Flooring installation</div>
-<div>🚿 Kitchen and bathroom renovations</div>
-<div>🔧 Tap replacement and plumbing repairs</div>
-<div>♨️ Heating systems</div>
-<div>🏠 Property extensions</div>
-<div>🏗️ Roofing services</div>
-<div>🌳 Gardening and outdoor improvements</div>
-<div>🪚 Carpentry and joinery</div>
-</div>
-</section>
-<section>
-<h2>Who we want to help you find</h2>
-<p>Private homeowners · Construction companies · Property managers · Landlords</p>
-<p>Private jobs and commercial opportunities require additional permitted sources; they are not guaranteed by planning data alone.</p>
-</section>
-<footer>BuildLead AI · London · Early development</footer>
+  <section>
+    <h2>London Lead Dashboard</h2>
+    <p>Review potential project signals and organise opportunities for your business.</p>
+    <div class="stats">
+      <div class="stat">Total leads<strong id="total">0</strong></div>
+      <div class="stat">Boroughs<strong id="boroughs">0</strong></div>
+      <div class="stat">Shown<strong id="shown">0</strong></div>
+    </div>
+    <p id="status" role="status">Loading latest lead data...</p>
+    <p class="notice">Planning records are potential signals, not confirmed jobs. Check the official record before contacting anyone.</p>
+  </section>
+  <section>
+    <h2>Find opportunities</h2>
+    <label for="search">Search leads</label>
+    <input id="search" type="search" placeholder="Try painting, kitchen, postcode or borough">
+    <label for="borough">London borough</label>
+    <select id="borough">
+      <option value="">All boroughs</option>
+    </select>
+    <label for="trade">Service</label>
+    <select id="trade">
+      <option value="">All services</option>
+      <option value="painting">Painting and Decorating</option>
+      <option value="flooring">Flooring Installation</option>
+      <option value="kitchen">Kitchen and Bathroom Renovations</option>
+      <option value="plumbing">Plumbing Repairs</option>
+      <option value="heating">Heating Systems</option>
+      <option value="extension">Property Extensions</option>
+      <option value="roofing">Roofing Services</option>
+      <option value="gardening">Gardening and Outdoor Improvements</option>
+      <option value="carpentry">Carpentry and Joinery</option>
+    </select>
+    <div id="results" aria-live="polite"></div>
+  </section>
+  <section>
+    <h2>Services covered</h2>
+    <div class="grid">
+      <div>🎨 Interior and exterior painting</div>
+      <div>🪵 Flooring installation</div>
+      <div>🚿 Kitchen and bathroom renovations</div>
+      <div>🔧 Tap replacement and plumbing repairs</div>
+      <div>♨️ Heating systems</div>
+      <div>🏠 Property extensions</div>
+      <div>🏗️ Roofing services</div>
+      <div>🌳 Gardening and outdoor improvements</div>
+      <div>🪚 Carpentry and joinery</div>
+    </div>
+  </section>
+  <section>
+    <h2>Who we want to help you find</h2>
+    <p>Private homeowners · Construction companies · Property managers · Landlords</p>
+    <p class="muted">Private jobs and commercial opportunities may require additional sources. Contact details are shown only when supplied in the lead data.</p>
+  </section>
+  <footer>BuildLead AI · London · Early development</footer>
 </main>
 <script>
-const search=document.getElementById('search');
-const borough=document.getElementById('borough');
-const trade=document.getElementById('trade');
-const results=document.getElementById('results');
-const statusText=document.getElementById('status');
-let leads=[];
-function text(v){return v==null?'':String(v)}
-function getBorough(x){return text(x.lpa_name||x.borough||x.local_authority||x.authority||x.area||'Unknown')}
-function getDescription(x){return text(x.description||x.address||x.site_address||x.title||x.name||'Potential project')}
-function getTrade(x){return text(x.trade||x.category||x.type||x.description||'').toLowerCase()}
-function render(){
-const q=search.value.toLowerCase().trim();
-const b=borough.value;
-const t=trade.value.toLowerCase();
-const filtered=leads.filter(x=>{
-const all=JSON.stringify(x).toLowerCase();
-return (!q||all.includes(q))&&(!b||getBorough(x)===b)&&(!t||getTrade(x).includes(t.split(' ')[0]));
-});
-document.getElementById('shown').textContent=filtered.length;
-results.innerHTML='';
-if(!filtered.length){results.textContent=leads.length?'No matching leads. Try changing your filters.':'No lead data loaded yet.';return}
-filtered.slice(0,100).forEach(x=>{
-const card=document.createElement('article');card.className='card';
-const title=document.createElement('h3');title.textContent=getDescription(x);
-const area=document.createElement('p');area.textContent='Area: '+getBorough(x);
-const detail=document.createElement('p');detail.textContent='Status: '+text(x.status||x.application_status||'Needs verification');
-const tag=document.createElement('span');tag.className='tag';tag.textContent='Potential lead · Verify first';
-card.append(title,area,detail,tag);
-const link=x.url||x.link||x.source_url;
-if(link&&/^https?:\/\//i.test(link)){const p=document.createElement('p');const a=document.createElement('a');a.href=link;a.target='_blank';a.rel='noopener noreferrer';a.textContent='View source';p.appendChild(a);card.appendChild(p)}
-results.appendChild(card);
-});
+'use strict';
+const search = document.getElementById('search');
+const borough = document.getElementById('borough');
+const trade = document.getElementById('trade');
+const results = document.getElementById('results');
+const statusText = document.getElementById('status');
+let leads = [];
+function text(value) {
+  return value == null ? '' : String(value).trim();
 }
-search.addEventListener('input',render);
-borough.addEventListener('change',render);
-trade.addEventListener('change',render);
-fetch('./leads/latest-leads.json').then(r=>{if(!r.ok)throw Error('Lead file not available');return r.json()}).then(data=>{
-leads=Array.isArray(data)?data:(data.leads||data.results||data.records||[]);
-document.getElementById('total').textContent=leads.length;
-const names=[...new Set(leads.map(getBorough).filter(x=>x!=='Unknown'))].sort();
-document.getElementById('boroughs').textContent=names.length;
-names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;borough.appendChild(o)});
-statusText.textContent=leads.length?'Latest available lead data loaded. Verify each opportunity before contacting anyone.':'The data file loaded, but no leads were found.';
-render();
-}).catch(()=>{statusText.textContent='Lead data could not be loaded. Check that leads/latest-leads.json exists in the repository.';render()});
+function firstValue(record, keys) {
+  for (const key of keys) {
+    const value = text(record[key]);
+    if (value) return value;
+  }
+  return '';
+}
+function getBorough(record) {
+  return firstValue(record, [
+    'lpa_name', 'borough', 'local_authority',
+    'authority', 'area'
+  ]) || 'Unknown';
+}
+function getDescription(record) {
+  return firstValue(record, [
+    'description', 'address', 'site_address',
+    'title', 'name'
+  ]) || 'Potential project';
+}
+function getStatus(record) {
+  return firstValue(record, [
+    'status', 'application_status'
+  ]) || 'Needs verification';
+}
+function getSource(record) {
+  const url = firstValue(record, [
+    'url', 'link', 'source_url'
+  ]);
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === 'https:' || parsed.protocol === 'http:') {
+      return parsed.href;
+    }
+  } catch (_) {}
+  return '';
+}
+function getContact(record) {
+  const fields = [
+    ['Contact name', ['contact_name', 'applicant_name', 'agent_name']],
+    ['Company', ['company_name', 'applicant_company', 'agent_company']],
+    ['Email', ['contact_email', 'email', 'applicant_email', 'agent_email']],
+    ['Phone', ['contact_phone', 'phone', 'telephone', 'applicant_phone', 'agent_phone']]
+  ];
+  return fields
+    .map(([label, keys]) => ({
+      label,
+      value: firstValue(record, keys)
+    }))
+    .filter(item => item.value);
+}
+function normalise(value) {
+  return text(value).toLowerCase();
+}
+function matchesTrade(record, selectedTrade) {
+  if (!selectedTrade) return true;
+  const description = normalise([
+    record.description,
+    record.trade,
+    record.category,
+    record.type,
+    record.application_type
+  ].map(text).join(' '));
+  const terms = {
+    painting: ['paint', 'decorat'],
+    flooring: ['floor', 'flooring'],
+    kitchen: ['kitchen', 'bathroom', 'renovation', 'refurbishment'],
+    plumbing: ['plumb', 'tap', 'pipe', 'water'],
+    heating: ['heating', 'boiler', 'radiator', 'heat pump'],
+    extension: ['extension', 'extend'],
+    roofing: ['roof', 'roofing'],
+    gardening: ['garden', 'landscap', 'outdoor'],
+    carpentry: ['carpent', 'joinery', 'woodwork']
+  };
+  return (terms[selectedTrade] || [selectedTrade])
+    .some(term => description.includes(term));
+}
+function addText(parent, tagName, value) {
+  const element = document.createElement(tagName);
+  element.textContent = value;
+  parent.appendChild(element);
+  return element;
+}
+function render() {
+  const query = normalise(search.value);
+  const selectedBorough = borough.value;
+  const selectedTrade = trade.value;
+  const filtered = leads.filter(record => {
+    const allFields = normalise(JSON.stringify(record));
+    return (!query || allFields.includes(query)) &&
+      (!selectedBorough || getBorough(record) === selectedBorough) &&
+      matchesTrade(record, selectedTrade);
+  });
+  document.getElementById('shown').textContent = filtered.length;
+  results.replaceChildren();
+  if (!filtered.length) {
+    addText(
+      results,
+      'p',
+      leads.length
+        ? 'No matching leads. Try changing your filters.'
+        : 'No lead data loaded yet.'
+    );
+    return;
+  }
+  filtered.slice(0, 100).forEach(record => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    addText(card, 'h3', getDescription(record));
+    addText(card, 'p', 'Area: ' + getBorough(record));
+    addText(card, 'p', 'Status: ' + getStatus(record));
+    const tag = addText(card, 'span', 'Potential lead · Verify first');
+    tag.className = 'tag';
+    const contacts = getContact(record);
+    if (contacts.length) {
+      const contactBox = document.createElement('div');
+      contactBox.className = 'contact';
+      addText(contactBox, 'strong', 'Available contact details');
+      contacts.forEach(item => {
+        const line = document.createElement('p');
+        addText(line, 'strong', item.label + ': ');
+        if (item.label === 'Email' &&
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(item.value)) {
+          const link = document.createElement('a');
+          link.href = 'mailto:' + item.value;
+          link.textContent = item.value;
+          line.appendChild(link);
+        } else if (item.label === 'Phone' &&
+                   /^[+\d().\s-]{7,25}$/.test(item.value)) {
+          const link = document.createElement('a');
+          link.href = 'tel:' + item.value.replace(/[^\d+]/g, '');
+          link.textContent = item.value;
+          line.appendChild(link);
+        } else {
+          line.appendChild(document.createTextNode(item.value));
+        }
+        contactBox.appendChild(line);
+      });
+      card.appendChild(contactBox);
+    }
+    const source = getSource(record);
+    if (source) {
+      const paragraph = document.createElement('p');
+      const link = document.createElement('a');
+      link.href = source;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = 'View official/source record';
+      paragraph.appendChild(link);
+      card.appendChild(paragraph);
+    }
+    results.appendChild(card);
+  });
+}
+search.addEventListener('input', render);
+borough.addEventListener('change', render);
+trade.addEventListener('change', render);
+fetch('./leads/latest-leads.json')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Lead data file not available');
+    }
+    return response.json();
+  })
+  .then(data => {
+    leads = Array.isArray(data)
+      ? data
+      : (data.leads || data.results || data.records || []);
+    if (!Array.isArray(leads)) leads = [];
+    document.getElementById('total').textContent = leads.length;
+    const names = [...new Set(
+      leads.map(getBorough).filter(name => name !== 'Unknown')
+    )].sort();
+    document.getElementById('boroughs').textContent = names.length;
+    names.forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      borough.appendChild(option);
+    });
+    statusText.textContent = leads.length
+      ? 'Latest available lead data loaded. Verify each opportunity before contacting anyone.'
+      : 'The data file loaded, but no leads were found.';
+    render();
+  })
+  .catch(() => {
+    statusText.textContent =
+      'Lead data could not be loaded. Check that leads/latest-leads.json exists in the repository.';
+    render();
+  });
 </script>
 </body>
 </html>
