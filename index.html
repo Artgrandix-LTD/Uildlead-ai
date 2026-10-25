@@ -28,6 +28,11 @@ small,.muted{color:#596b62}
 .notice{padding:12px;background:#fff8e6;border-radius:8px}
 footer{text-align:center;padding:25px;color:#617168}
 button{padding:10px 14px;border:0;border-radius:8px;background:#176c53;color:white;font-size:15px;cursor:pointer}
+.pagination{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:18px 0}
+.pagination button:disabled{opacity:.4;cursor:not-allowed}
+.detail{background:#f7faf8;border:1px solid #dce6df;border-radius:10px;padding:14px;margin-top:12px}
+.detail p{overflow-wrap:anywhere}
+.detail a{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -68,7 +73,10 @@ button{padding:10px 14px;border:0;border-radius:8px;background:#176c53;color:whi
       <option value="gardening">Gardening and Outdoor Improvements</option>
       <option value="carpentry">Carpentry and Joinery</option>
     </select>
+    <p id="pageSummary" class="muted"></p>
     <div id="results" aria-live="polite"></div>
+    <nav id="pagination" class="pagination" aria-label="Lead pages"></nav>
+    <section id="projectDetail" hidden aria-live="polite"></section>
   </section>
   <section>
     <h2>Services covered</h2>
@@ -98,6 +106,11 @@ const borough = document.getElementById('borough');
 const trade = document.getElementById('trade');
 const results = document.getElementById('results');
 const statusText = document.getElementById('status');
+const pagination = document.getElementById('pagination');
+const pageSummary = document.getElementById('pageSummary');
+const projectDetail = document.getElementById('projectDetail');
+const pageSize = 12;
+let currentPage = 1;
 let leads = [];
 function text(value) {
   return value == null ? '' : String(value).trim();
@@ -195,7 +208,15 @@ function render() {
       matchesTrade(record, selectedTrade);
   });
   document.getElementById('shown').textContent = filtered.length;
+  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+  currentPage = Math.min(currentPage, pageCount);
+  const startIndex = (currentPage - 1) * pageSize;
+  const pageItems = filtered.slice(startIndex, startIndex + pageSize);
   results.replaceChildren();
+  pagination.replaceChildren();
+  pageSummary.textContent = filtered.length
+    ? 'Showing ' + (startIndex + 1) + '–' + Math.min(startIndex + pageSize, filtered.length) + ' of ' + filtered.length + ' matching projects'
+    : '';
   if (!filtered.length) {
     addText(
       results,
@@ -206,7 +227,7 @@ function render() {
     );
     return;
   }
-  filtered.slice(0, 100).forEach(record => {
+  pageItems.forEach(record => {
     const card = document.createElement('article');
     card.className = 'card';
     addText(card, 'h3', getDescription(record));
@@ -214,6 +235,12 @@ function render() {
     addText(card, 'p', 'Status: ' + getStatus(record));
     const tag = addText(card, 'span', 'Potential lead · Verify first');
     tag.className = 'tag';
+    const detailsButton = document.createElement('button');
+    detailsButton.type = 'button';
+    detailsButton.textContent = 'View project details';
+    detailsButton.style.margin = '12px 8px 0 0';
+    detailsButton.addEventListener('click', () => showDetails(record));
+    card.appendChild(detailsButton);
     const contacts = getContact(record);
     if (contacts.length) {
       const contactBox = document.createElement('div');
@@ -254,10 +281,90 @@ function render() {
     }
     results.appendChild(card);
   });
+  if (filtered.length > pageSize) {
+    const previous = document.createElement('button');
+    previous.textContent = 'Previous';
+    previous.disabled = currentPage === 1;
+    previous.addEventListener('click', () => { currentPage--; render(); });
+    pagination.appendChild(previous);
+    addText(pagination, 'span', 'Page ' + currentPage + ' of ' + pageCount);
+    const next = document.createElement('button');
+    next.textContent = 'Next';
+    next.disabled = currentPage === pageCount;
+    next.addEventListener('click', () => { currentPage++; render(); });
+    pagination.appendChild(next);
+  }
 }
-search.addEventListener('input', render);
-borough.addEventListener('change', render);
-trade.addEventListener('change', render);
+function showDetails(record) {
+  projectDetail.hidden = false;
+  projectDetail.replaceChildren();
+  projectDetail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  addText(projectDetail, 'h2', 'Project details');
+  const rows = [
+    ['Description', ['description', 'title', 'name']],
+    ['Borough / authority', ['lpa_name', 'borough', 'local_authority', 'authority', 'area']],
+    ['Application reference', ['lpa_app_no', 'application_reference', 'reference', 'application_ref']],
+    ['Address', ['site_address', 'address', 'postcode']],
+    ['Application type', ['application_type', 'type']],
+    ['Decision / status', ['status', 'application_status', 'decision']],
+    ['Last updated', ['last_updated', 'decision_date', 'application_date', 'date_received']],
+    ['Applicant', ['applicant_name', 'contact_name']],
+    ['Agent / architect', ['agent_name', 'architect_name', 'agent_company']],
+    ['Company', ['company_name', 'organisation', 'agent_company']],
+    ['Public email', ['agent_email', 'contact_email', 'applicant_email']],
+    ['Public phone', ['agent_phone', 'contact_phone', 'applicant_phone']]
+  ];
+  rows.forEach(([label, keys]) => {
+    const value = firstValue(record, keys);
+    if (value) {
+      const p = document.createElement('p');
+      addText(p, 'strong', label + ': ');
+      p.appendChild(document.createTextNode(value));
+      projectDetail.appendChild(p);
+    }
+  });
+  const source = getSource(record);
+  if (source) {
+    const p = document.createElement('p');
+    const a = document.createElement('a');
+    a.href = source;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = 'Open official/source planning record';
+    p.appendChild(a);
+    projectDetail.appendChild(p);
+  }
+  const documentKeys = ['documents_url', 'plans_url', 'drawings_url', 'documents', 'plans', 'drawings'];
+  const links = [];
+  documentKeys.forEach(key => {
+    const value = text(record[key]);
+    if (!value) return;
+    if (/^https?:\\/\\//i.test(value)) links.push({label:key.replace(/_/g, ' '),url:value});
+    else if (Array.isArray(record[key])) record[key].forEach(item => {
+      const url = typeof item === 'string' ? item : firstValue(item, ['url', 'href', 'link']);
+      if (/^https?:\\/\\//i.test(url)) links.push({label:firstValue(item, ['title', 'name']) || key.replace(/_/g, ' '),url});
+    });
+  });
+  if (links.length) {
+    addText(projectDetail, 'h3', 'Published plans and documents');
+    links.forEach(item => {
+      const p = document.createElement('p');
+      const a = document.createElement('a');
+      a.href = item.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = item.label;
+      p.appendChild(a);
+      projectDetail.appendChild(p);
+    });
+  } else {
+    addText(projectDetail, 'p', 'No direct plans or document links were supplied in this lead record. Open the official planning record to check published documents.');
+  }
+  addText(projectDetail, 'p', 'Only use contact details published in the record. Verify the application and decision with the council before acting.');
+}
+search.addEventListener('input', () => { currentPage = 1; render(); });
+borough.addEventListener('change', () => { currentPage = 1; render(); });
+trade.addEventListener('change', () => { currentPage = 1; render(); });
 fetch('./leads/latest-leads.json')
   .then(response => {
     if (!response.ok) {
