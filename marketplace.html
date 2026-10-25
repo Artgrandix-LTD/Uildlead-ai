@@ -31,13 +31,13 @@ button,.btn{border:0;border-radius:10px;padding:11px 15px;background:var(--yello
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const cfg=window.BUILDLEAD_SUPABASE;
 const authStatus=document.getElementById('authStatus'),projectStatus=document.getElementById('projectStatus'),projects=document.getElementById('projects'),myStatus=document.getElementById('myStatus'),myItems=document.getElementById('myItems');
-const signOut=document.getElementById('signOut');
+const signOut=document.getElementById('signOut');\n const roleParam=new URLSearchParams(location.search).get('role');\n if(roleParam==='contractor'||roleParam==='landlord') document.getElementById('role').value=roleParam;
 if(!cfg?.url||!cfg?.publishableKey){authStatus.textContent='Supabase is not configured. Marketplace actions are disabled.';projectStatus.textContent='Marketplace unavailable until Supabase is configured.'}
 else {
  const supabase=createClient(cfg.url,cfg.publishableKey);
  const say=(el,msg)=>el.textContent=msg;
- document.getElementById('signIn').onclick=async()=>{const {error}=await supabase.auth.signInWithPassword({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value});say(authStatus,error?error.message:'Signed in.');await refresh()};
- document.getElementById('signUp').onclick=async()=>{const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value;const {error}=await supabase.auth.signUp({email,password,options:{data:{requested_role:document.getElementById('role').value}}});say(authStatus,error?error.message:'Account created. Check your email if confirmation is enabled. BuildLead must approve contractor accounts and link landlord projects before marketplace use.')};
+ document.getElementById('signIn').onclick=async()=>{const {data,error}=await supabase.auth.signInWithPassword({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value});if(error){say(authStatus,error.message);return}const role=data.user?.user_metadata?.requested_role;if(role==='landlord'){location.href='./lead-request.html';return}say(authStatus,'Signed in as contractor.');await refresh()};
+ document.getElementById('signUp').onclick=async()=>{const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value,role=document.getElementById('role').value;if(!email||password.length<8){say(authStatus,'Enter a valid email and password with at least 8 characters.');return}const {data,error}=await supabase.auth.signUp({email,password,options:{data:{requested_role:role},emailRedirectTo:location.origin+location.pathname+'?role='+role}});if(error){say(authStatus,error.message);return}if(role==='landlord'){say(authStatus,'Account created. Next, complete your project request. If email confirmation is enabled, confirm your email first.');location.href='./lead-request.html?role=landlord';return}say(authStatus,'Contractor account created. Check your email if confirmation is enabled. Your account needs BuildLead approval before project access.');}
  signOut.onclick=async()=>{await supabase.auth.signOut();say(authStatus,'Signed out.');await refresh()};
  async function refresh(){
   const {data:{session}}=await supabase.auth.getSession();
