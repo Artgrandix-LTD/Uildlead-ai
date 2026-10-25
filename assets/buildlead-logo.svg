@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="64" viewBox="0 0 260 64" role="img" aria-labelledby="title desc">
+<title id="title">BuildLead</title><desc id="desc">A navy and yellow house and building mark beside the BuildLead wordmark.</desc>
+<rect width="260" height="64" rx="12" fill="#071b2b"/>
+<g transform="translate(12 8)">
+<path d="M4 25 25 7 46 25" fill="none" stroke="#ffc629" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 24v25h30V24" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+<path d="M20 49V34h10v15" fill="#071b2b"/>
+<path d="M35 17V5h8v19" fill="#ffc629"/>
+<path d="M37 11h4M37 16h4" stroke="#071b2b" stroke-width="1.6"/>
+<path d="M4 50h43" stroke="#ffc629" stroke-width="4" stroke-linecap="round"/>
+</g>
+<text x="69" y="39" font-family="Inter,Arial,sans-serif" font-size="25" font-weight="800" fill="#fff" letter-spacing="-1">Build</text>
+<text x="130" y="39" font-family="Inter,Arial,sans-serif" font-size="25" font-weight="800" fill="#ffc629" letter-spacing="-1">Lead</text>
+</svg>
