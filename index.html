@@ -365,10 +365,10 @@ function showDetails(record) {
   documentKeys.forEach(key => {
     const value = text(record[key]);
     if (!value) return;
-    if (/^https?:\\/\\//i.test(value)) links.push({label:key.replace(/_/g, ' '),url:value});
+    if (/^https?:\/\//i.test(value)) links.push({label:key.replace(/_/g, ' '),url:value});
     else if (Array.isArray(record[key])) record[key].forEach(item => {
       const url = typeof item === 'string' ? item : firstValue(item, ['url', 'href', 'link']);
-      if (/^https?:\\/\\//i.test(url)) links.push({label:firstValue(item, ['title', 'name']) || key.replace(/_/g, ' '),url});
+      if (/^https?:\/\//i.test(url)) links.push({label:firstValue(item, ['title', 'name']) || key.replace(/_/g, ' '),url});
     });
   });
   if (links.length) {
