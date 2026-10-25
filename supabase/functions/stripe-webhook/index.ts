@@ -43,10 +43,19 @@ Deno.serve(async (req) => {
       }
       // Idempotent: repeated Stripe delivery must not change an already paid record.
       if (purchase.payment_status !== "paid") {
-        const { error: updateError } = await admin.from("project_purchases")
-          .update({ payment_status: "paid", provider_payment_intent_id: typeof session.payment_intent === "string" ? session.payment_intent : null, paid_at: new Date().toISOString(), payment_provider: "stripe" })
-          .eq("id", purchaseId).eq("payment_status", "pending");
-        if (updateError) throw updateError;
+        const paymentIntentId = typeof session.payment_intent === "string" ? session.payment_intent : null;
+        const { data: confirmed, error: confirmError } = await admin.rpc("confirm_project_purchase_payment", {
+          p_purchase_id: purchaseId,
+          p_checkout_id: session.id,
+          p_payment_intent_id: paymentIntentId,
+          p_amount_pence: session.amount_total,
+          p_currency: session.currency,
+        });
+        if (confirmError) throw confirmError;
+        if (confirmed !== true) {
+          // Refunds are handled manually in Stripe dashboard; never release contacts if the project cap was reached.
+          console.error("Paid session could not be allocated within project cap", purchaseId);
+        }
       }
     } else if (event.type === "checkout.session.async_payment_failed" || event.type === "checkout.session.expired") {
       const session = event.data.object as Stripe.Checkout.Session;
