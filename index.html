@@ -69,7 +69,7 @@ section,.panel,.card,.project-card,.benefit{box-shadow:0 10px 30px rgba(16,38,59
 
 .site-brand{display:inline-flex;align-items:center;text-decoration:none;line-height:0}.site-brand img{display:block;width:min(260px,70vw);height:auto;max-height:64px;object-fit:contain;border-radius:10px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}.topbar nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:0}.topbar nav a{color:#fff;text-decoration:none;font-weight:750;font-size:14px}.back{display:inline-block;margin-top:12px;color:#ffc629!important}
 
-/* Ensure the BuildLead brand mark is visible on every page */
+/* Customer-facing homepage: keep planning-lead dashboard off the public view. */\nmain > section:first-of-type, main > #opportunities, main > section:last-of-type:not(#request-project):not(#services) { display:none !important; }\n/* Ensure the BuildLead brand mark is visible on every page */
 .site-brand{display:inline-flex!important;align-items:center!important;max-width:100%;padding:0!important;margin:0 0 8px;text-decoration:none!important;line-height:0!important;visibility:visible!important;opacity:1!important}
 .site-brand img{display:block!important;width:260px!important;max-width:min(70vw,260px)!important;height:auto!important;max-height:none!important;object-fit:contain!important;visibility:visible!important;opacity:1!important;border:0!important;background:#071b2b!important;border-radius:10px!important}
 </style>
@@ -79,7 +79,7 @@ section,.panel,.card,.project-card,.benefit{box-shadow:0 10px 30px rgba(16,38,59
 <header>
   <a class="site-brand" href="./" aria-label="BuildLead home"><img src="./assets/buildlead-logo.svg" width="260" height="64" alt="BuildLead — construction leads"></a><div class="eyebrow" style="margin-top:12px">LONDON PROJECT INTELLIGENCE</div>
   <p>Spot planning activity. Discover project opportunities. Find your next construction lead across London.</p>
-  <div class="hero-actions"><a class="hero-primary" href="./choose-role.html">Get started <span aria-hidden="true">↗</span></a><a class="hero-secondary" href="#opportunities">Explore opportunities</a><a class="hero-secondary" href="./contractors.html">For contractors ↗</a><a class="hero-secondary" href="./choose-role.html">Choose your account ↗</a><a class="hero-secondary" href="#services">Explore services</a></div>
+  <div class="hero-actions"><a class="hero-primary" href="./choose-role.html">Get started <span aria-hidden="true">↗</span></a><a class="hero-secondary" href="./contractors.html">For contractors ↗</a><a class="hero-secondary" href="./choose-role.html">Choose your account ↗</a><a class="hero-secondary" href="#services">Explore services</a></div>
 </header>
 <main>
   <section>
@@ -152,7 +152,7 @@ section,.panel,.card,.project-card,.benefit{box-shadow:0 10px 30px rgba(16,38,59
     <p>Private homeowners · Construction companies · Property managers · Landlords</p>
     <p class="muted">Private jobs and commercial opportunities may require additional sources. Contact details are shown only when supplied in the lead data.</p>
   </section>
-  <footer>BuildLead · London · <a href="./lead-request.html">Request a quote</a> · <a href="./contractors.html">For contractors</a> · <a href="./privacy.html">Privacy notice</a> · Public planning signals are not confirmed customer enquiries.</footer>
+  <footer>BuildLead · London · <a href="./lead-request.html">Request a quote</a> · <a href="./contractors.html">For contractors</a> · <a href="./privacy.html">Privacy notice</a> · Customer project requests are reviewed before being shared with approved contractors.</footer>
 </main>
 <script>
 'use strict';
