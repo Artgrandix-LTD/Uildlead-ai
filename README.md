@@ -1,2 +1,4 @@
-# Uildlead-ai
-BuildLead AI - Find private construction and renovation leads across London.
+# BuildLead
+BuildLead — Find construction and renovation opportunities across London using public planning data.
+
+Live website: https://artgrandix-ltd.github.io/Uildlead-ai/
