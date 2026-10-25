@@ -32,7 +32,7 @@ create table if not exists public.customer_leads (
 
 alter table public.customer_leads enable row level security;
 revoke all on table public.customer_leads from anon, authenticated;
-grant insert on table public.customer_leads to anon;
+grant insert (project_type, postcode, start_timing, budget_range, project_details, full_name, email, phone, contact_consent, sharing_consent) on table public.customer_leads to anon;
 grant select, insert, update, delete on table public.customer_leads to service_role;
 
 drop policy if exists "Public can submit customer requests" on public.customer_leads;
