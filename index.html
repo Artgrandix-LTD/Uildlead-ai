@@ -90,7 +90,7 @@ const results=document.getElementById('results');
 const statusText=document.getElementById('status');
 let leads=[];
 function text(v){return v==null?'':String(v)}
-function getBorough(x){return text(x.borough||x.local_authority||x.authority||x.area||'Unknown')}
+function getBorough(x){return text(x.lpa_name||x.borough||x.local_authority||x.authority||x.area||'Unknown')}
 function getDescription(x){return text(x.description||x.address||x.site_address||x.title||x.name||'Potential project')}
 function getTrade(x){return text(x.trade||x.category||x.type||x.description||'').toLowerCase()}
 function render(){
