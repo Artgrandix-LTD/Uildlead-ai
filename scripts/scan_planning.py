@@ -66,7 +66,7 @@ SOURCE_FIELDS = [
 ]
 
 def main():
-    page_size = 100
+    page_size = 1000
     offset = 0
     hits = []
 
@@ -106,7 +106,7 @@ def main():
                     "Planning data request failed. Check API access: "
                     + str(error)
                 )
-            print(f"Pagination stopped at offset {offset}: {error}")
+            print(f"Pagination stopped at offset {offset} after collecting {len(hits)} records: {error}")
             break
 
         batch = data.get("hits", {}).get("hits", [])
