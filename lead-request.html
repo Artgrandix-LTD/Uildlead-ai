@@ -100,8 +100,6 @@ form.addEventListener('submit', async (event) => {
     phone: document.getElementById('phone').value.trim(),
     contact_consent: document.getElementById('contact_consent').checked,
     sharing_consent: document.getElementById('sharing_consent').checked,
-    status: 'pending_review',
-    contact_verified: false
   };
   button.disabled = true;
   button.textContent = 'Sending securely…';
