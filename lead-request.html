@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#173b34">
+<meta name="theme-color" content="#071b2b">
 <meta name="description" content="Tell BuildLead about your building or renovation project and request contact from suitable local contractors.">
 <title>Request a Quote | BuildLead AI</title>
 <style>
-:root{--ink:#172b26;--green:#176b52;--mint:#c7f4df;--paper:#f5f7f2;--line:#dfe8df;--muted:#62736a}
+:root{--ink:#10263b;--green:#123b59;--mint:#ffc629;--paper:#f3f6fa;--line:#dce5ee;--muted:#65758a}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
 header{background:linear-gradient(90deg,rgba(7,28,40,.92),rgba(7,28,40,.55)),url(https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1500&q=85) center 55%/cover;color:#fff;padding:22px max(18px,calc((100% - 760px)/2));min-height:185px;display:flex;align-items:flex-start;flex-direction:column;justify-content:center}
-header a{color:#c7f4df}main{max-width:900px;margin:28px auto;padding:0 16px 40px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(18px,4vw,34px);box-shadow:0 18px 55px #173d2a12}.upload-box{display:block;border:2px dashed #b9d8c5;background:#f6fbf7;border-radius:14px;padding:20px;text-align:center;margin-top:8px}.upload-box input{border:0;background:transparent}.photo-preview{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.photo-preview img{width:100px;height:85px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}.benefits{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0 0 18px}.benefit{background:#f4faf5;border:1px solid var(--line);padding:12px;border-radius:12px;font-size:13px;font-weight:700;color:#315b45}
+header a{color:#ffc629}main{max-width:900px;margin:28px auto;padding:0 16px 40px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(18px,4vw,34px);box-shadow:0 18px 55px #173d2a12}.upload-box{display:block;border:2px dashed #a8bacb;background:#f7f9fc;border-radius:14px;padding:20px;text-align:center;margin-top:8px}.upload-box input{border:0;background:transparent}.photo-preview{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.photo-preview img{width:100px;height:85px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}.benefits{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0 0 18px}.benefit{background:#f7f9fc;border:1px solid var(--line);padding:12px;border-radius:12px;font-size:13px;font-weight:700;color:#193b59}
 h1{font-size:clamp(25px,4vw,34px);line-height:1.2;margin:12px 0}p{color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 14px}
 label{display:block;font-weight:700;font-size:14px;margin:12px 0 5px}
@@ -19,8 +19,19 @@ input,select,textarea{width:100%;padding:12px;border:1px solid #ccd9cf;border-ra
 textarea{min-height:90px;resize:vertical}.check{display:flex;align-items:flex-start;gap:10px;margin:16px 0;font-size:14px;color:#3d5147}.check input{width:auto;margin-top:5px;flex:0 0 auto}
 button{width:100%;border:0;border-radius:11px;padding:14px;background:var(--green);color:white;font:inherit;font-weight:800;cursor:pointer}
 button:disabled{opacity:.6;cursor:wait}.status{padding:12px;border-radius:10px;margin-top:14px;display:none}.status.show{display:block}.status.ok{background:#e6f7ec;color:#175c3e}.status.err{background:#fff0ed;color:#922e22}
-.honey{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.small{font-size:12px}.back{color:#c7f4df;font-weight:700}
+.honey{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.small{font-size:12px}.back{color:#ffc629;font-weight:700}
 :focus-visible{outline:3px solid #75d9a5;outline-offset:3px}
+
+/* BuildLead visual system: navy, white and construction yellow */
+:root{--ink:#10263b;--green:#123b59;--mint:#ffc629;--paper:#f3f6fa;--line:#dce5ee;--muted:#65758a;--gold:#ffc629}
+body{background:#f3f6fa;color:#10263b}
+header{box-shadow:0 12px 34px rgba(7,27,43,.12)}
+nav a,header a{transition:color .18s ease,opacity .18s ease}
+nav a:hover,header a:hover{opacity:.82}
+button,.btn,.primary,.hero-actions a:first-child,.actions .primary,input[type=submit]{background:#ffc629!important;color:#10263b!important;border-color:#ffc629!important;font-weight:800!important;box-shadow:0 5px 14px rgba(255,198,41,.18)}
+button:hover,.btn:hover,.primary:hover,.hero-actions a:first-child:hover{filter:brightness(.97);transform:translateY(-1px)}
+section,.panel,.card,.project-card,.benefit{box-shadow:0 10px 30px rgba(16,38,59,.06)}
+.brandmark{background:#ffc629!important;color:#10263b!important;border-radius:12px}
 </style>
 </head>
 <body>
