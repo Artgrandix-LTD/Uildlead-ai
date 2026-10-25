@@ -33,7 +33,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const cfg=window.BUILDLEAD_SUPABASE;
 const authStatus=document.getElementById('authStatus'),projectStatus=document.getElementById('projectStatus'),projects=document.getElementById('projects'),myStatus=document.getElementById('myStatus'),myItems=document.getElementById('myItems');
 const signOut=document.getElementById('signOut');
- const roleParam=new URLSearchParams(location.search).get('role');\n if(roleParam==='contractor'||roleParam==='landlord') document.getElementById('role').value=roleParam;
+ const roleParam=new URLSearchParams(location.search).get('role');
+ if(roleParam==='contractor'||roleParam==='landlord') document.getElementById('role').value=roleParam;
 if(!cfg?.url||!cfg?.publishableKey){authStatus.textContent='Supabase is not configured. Marketplace actions are disabled.';projectStatus.textContent='Marketplace unavailable until Supabase is configured.'}
 else {
  const supabase=createClient(cfg.url,cfg.publishableKey);
