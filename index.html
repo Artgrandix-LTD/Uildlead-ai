@@ -7,41 +7,65 @@
 <title>BuildLead AI | London Construction Leads</title>
 <style>
 *{box-sizing:border-box}
-body{font-family:Arial,sans-serif;margin:0;background:#f3f6f4;color:#173b34;line-height:1.5}
-header{background:#173b34;color:white;padding:28px 20px}
-main{max-width:1100px;margin:24px auto;padding:0 16px}
-h1{margin:0;font-size:32px}
-header p{color:#d5e8df}
-section,.stat{background:white;border-radius:14px;padding:20px;margin-bottom:18px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
-.stat strong{display:block;font-size:26px;margin-top:8px}
-input,select{width:100%;padding:12px;border:1px solid #ccd8d1;border-radius:8px;font-size:16px;margin:6px 0 12px;background:white;color:#173b34}
-label{font-weight:bold;font-size:14px;display:block}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.tag{display:inline-block;background:#e1f2e9;padding:5px 9px;border-radius:20px;font-size:12px}
-.card{border:1px solid #dce6df;padding:16px;border-radius:12px;margin:12px 0;overflow-wrap:anywhere}
-a{color:#176c53}
-a:focus,input:focus,select:focus{outline:2px solid #176c53;outline-offset:2px}
-small,.muted{color:#596b62}
-.contact{background:#f1f8f4;padding:12px;border-radius:8px;margin:12px 0}
+:root{--ink:#172b26;--green:#176b52;--mint:#c7f4df;--paper:#f5f7f2;--line:#e0e8df;--muted:#66756d;--gold:#f2c46d}
+html{scroll-behavior:smooth}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:0;background:var(--paper);color:var(--ink);line-height:1.6}
+header{position:relative;overflow:hidden;background:radial-gradient(ellipse at 85% 5%,#2d7b5f 0,transparent 36%),linear-gradient(125deg,#102e27 0%,#17483a 55%,#20644b 100%);color:white;padding:34px max(22px,calc((100% - 1100px)/2));}
+header:after{content:"";position:absolute;width:320px;height:320px;border:1px solid #ffffff20;border-radius:50%;right:-80px;bottom:-210px;box-shadow:0 0 0 35px #ffffff08,0 0 0 70px #ffffff06;pointer-events:none}
+.brandline{display:flex;align-items:center;gap:12px}
+.brandmark{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:#c7f4df;color:#164434;font-weight:900;font-size:20px;box-shadow:0 8px 24px #071f1833}
+h1{margin:0;font-size:clamp(27px,4vw,38px);letter-spacing:-1.2px;line-height:1.15}
+header p{color:#d9eee4;max-width:610px;margin:16px 0 18px;font-size:17px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#b7f0d4}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.hero-actions a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;padding:10px 15px;border-radius:11px;font-weight:750}
+.hero-primary{background:var(--mint);color:#143d2f}
+.hero-secondary{border:1px solid #ffffff45;color:white;background:#ffffff0c}
+main{max-width:1100px;margin:28px auto;padding:0 18px}
+section,.stat{background:white;border:1px solid #e6ece5;border-radius:20px;padding:clamp(18px,3vw,26px);margin-bottom:18px;box-shadow:0 8px 28px #163b2b08}
+h2{font-size:21px;letter-spacing:-.45px;margin:0 0 8px}
+section>p{color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:20px 0}
+.stat{margin:0;padding:18px;background:linear-gradient(145deg,#fff,#f6faf6);color:var(--muted);font-size:13px;font-weight:700}
+.stat strong{display:block;font-size:30px;line-height:1.2;margin-top:8px;letter-spacing:-1px;color:var(--green)}
+input,select{width:100%;padding:13px 14px;border:1px solid #d7e1d9;border-radius:11px;font-size:15px;margin:7px 0 15px;background:#fcfdfb;color:var(--ink)}
+label{font-weight:750;font-size:13px;display:block;color:#34483f}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px}
+.grid>div{background:#f6faf6;border:1px solid #e5eee6;border-radius:13px;padding:14px;font-weight:650}
+.tag{display:inline-flex;align-items:center;background:#e2f7eb;color:#176344;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:750}
+.card{background:linear-gradient(145deg,#fff,#fcfdfb);border:1px solid var(--line);padding:19px;border-radius:16px;margin:13px 0;overflow-wrap:anywhere;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 12px 28px #173d2a0e;border-color:#b9d9c6}
+.card h3{margin:0 0 9px;font-size:17px;letter-spacing:-.2px}
+a{color:var(--green);font-weight:650}
+a:focus,input:focus,select:focus,button:focus{outline:3px solid #7bd8ac;outline-offset:3px}
+small,.muted{color:var(--muted)}
+.contact{background:#f1f8f4;padding:13px;border:1px solid #e1eee4;border-radius:12px;margin:12px 0}
 .contact p{margin:6px 0}
-.notice{padding:12px;background:#fff8e6;border-radius:8px}
-footer{text-align:center;padding:25px;color:#617168}
-button{padding:10px 14px;border:0;border-radius:8px;background:#176c53;color:white;font-size:15px;cursor:pointer}
+.notice{padding:13px 15px;background:#fff8e8;border:1px solid #f4e4bd;border-radius:12px;color:#745a20}
+footer{text-align:center;padding:30px 15px;color:#758279;font-size:13px}
+button{padding:11px 15px;border:0;border-radius:10px;background:var(--green);color:white;font-size:14px;font-weight:750;cursor:pointer;transition:filter .15s ease,transform .15s ease}
+button:hover{filter:brightness(1.08);transform:translateY(-1px)}
 .pagination{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:18px 0}
-.pagination button:disabled{opacity:.4;cursor:not-allowed}
-.detail{background:#f7faf8;border:1px solid #dce6df;border-radius:10px;padding:14px;margin-top:12px}
+.pagination button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.detail{background:#f7faf8;border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
 .detail p{overflow-wrap:anywhere}
 .detail a{overflow-wrap:anywhere}
+#status{display:flex;align-items:center;gap:8px;color:#486258;font-size:14px}
+#status:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#e3b54e;flex:0 0 auto}
+#results:empty{display:none}
+@media(max-width:600px){header{padding:28px 20px}main{margin:16px auto;padding:0 12px}.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.stat{padding:12px;font-size:11px}.stat strong{font-size:24px}section{border-radius:16px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
 </style>
 </head>
 <body>
 <header>
-  <h1>BuildLead <span style="color:#78d5ac">AI</span></h1>
-  <p>Construction, renovation and property opportunities across London.</p>
+  <div class="brandline"><div class="brandmark" aria-hidden="true">B</div><div><div class="eyebrow">LONDON PROJECT INTELLIGENCE</div><h1>BuildLead <span style="color:#a8f2cc">AI</span></h1></div></div>
+  <p>Spot planning activity. Discover project opportunities. Find your next construction lead across London.</p>
+  <div class="hero-actions"><a class="hero-primary" href="#opportunities">Explore opportunities <span aria-hidden="true">↘</span></a><a class="hero-secondary" href="#services">Explore services</a></div>
 </header>
 <main>
   <section>
+    <div class="eyebrow" style="color:#287454">YOUR LONDON PIPELINE</div>
     <h2>London Lead Dashboard</h2>
     <p>Review potential project signals and organise opportunities for your business.</p>
     <div class="stats">
@@ -52,8 +76,9 @@ button{padding:10px 14px;border:0;border-radius:8px;background:#176c53;color:whi
     <p id="status" role="status">Loading latest lead data...</p>
     <p class="notice">Planning records are potential signals, not confirmed jobs. Check the official record before contacting anyone.</p>
   </section>
-  <section>
-    <h2>Find opportunities</h2>
+  <section id="opportunities">
+    <div class="eyebrow" style="color:#287454">SEARCH · FILTER · DISCOVER</div>
+    <h2>Find your next opportunity</h2>
     <label for="search">Search leads</label>
     <input id="search" type="search" placeholder="Try painting, kitchen, postcode or borough">
     <label for="borough">London borough</label>
@@ -87,7 +112,8 @@ button{padding:10px 14px;border:0;border-radius:8px;background:#176c53;color:whi
     <div id="results" aria-live="polite"></div>
     <nav id="pagination" class="pagination" aria-label="Lead pages"></nav>
   </section>
-  <section>
+  <section id="services">
+    <div class="eyebrow" style="color:#287454">BUILT FOR YOUR TRADE</div>
     <h2>Services covered</h2>
     <div class="grid">
       <div>🎨 Interior and exterior painting</div>
@@ -102,11 +128,12 @@ button{padding:10px 14px;border:0;border-radius:8px;background:#176c53;color:whi
     </div>
   </section>
   <section>
+    <div class="eyebrow" style="color:#287454">OPPORTUNITIES FOR YOUR BUSINESS</div>
     <h2>Who we want to help you find</h2>
     <p>Private homeowners · Construction companies · Property managers · Landlords</p>
     <p class="muted">Private jobs and commercial opportunities may require additional sources. Contact details are shown only when supplied in the lead data.</p>
   </section>
-  <footer>BuildLead AI · London · Early development</footer>
+  <footer>BuildLead AI · London · Public planning signals, refreshed by scheduled scans</footer>
 </main>
 <script>
 'use strict';
