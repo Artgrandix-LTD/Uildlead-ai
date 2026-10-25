@@ -76,7 +76,6 @@ button{padding:10px 14px;border:0;border-radius:8px;background:#176c53;color:whi
     <p id="pageSummary" class="muted"></p>
     <div id="results" aria-live="polite"></div>
     <nav id="pagination" class="pagination" aria-label="Lead pages"></nav>
-    <section id="projectDetail" hidden aria-live="polite"></section>
   </section>
   <section>
     <h2>Services covered</h2>
@@ -108,7 +107,6 @@ const results = document.getElementById('results');
 const statusText = document.getElementById('status');
 const pagination = document.getElementById('pagination');
 const pageSummary = document.getElementById('pageSummary');
-const projectDetail = document.getElementById('projectDetail');
 const pageSize = 12;
 let currentPage = 1;
 let leads = [];
@@ -141,7 +139,7 @@ function getStatus(record) {
 }
 function getSource(record) {
   const url = firstValue(record, [
-    'url', 'link', 'source_url'
+    'url', 'link', 'source_url', 'planning_record_url'
   ]);
   try {
     const parsed = new URL(url);
@@ -152,6 +150,8 @@ function getSource(record) {
   return '';
 }
 function getContact(record) {
+  const source = record.public_contact && typeof record.public_contact === 'object'
+    ? { ...record, ...record.public_contact } : record;
   const fields = [
     ['Contact name', ['contact_name', 'applicant_name', 'agent_name']],
     ['Company', ['company_name', 'applicant_company', 'agent_company']],
@@ -161,7 +161,7 @@ function getContact(record) {
   return fields
     .map(([label, keys]) => ({
       label,
-      value: firstValue(record, keys)
+      value: firstValue(source, keys)
     }))
     .filter(item => item.value);
 }
@@ -239,7 +239,7 @@ function render() {
     detailsButton.type = 'button';
     detailsButton.textContent = 'View project details';
     detailsButton.style.margin = '12px 8px 0 0';
-    detailsButton.addEventListener('click', () => showDetails(record));
+    detailsButton.addEventListener('click', () => showDetails(record, card, detailsButton));
     card.appendChild(detailsButton);
     const contacts = getContact(record);
     if (contacts.length) {
@@ -295,59 +295,66 @@ function render() {
     pagination.appendChild(next);
   }
 }
-function showDetails(record) {
-  projectDetail.hidden = false;
-  projectDetail.replaceChildren();
-  projectDetail.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  addText(projectDetail, 'h2', 'Project details');
+function showDetails(record, card, button) {
+  const existing = card.querySelector('.detail');
+  if (existing) {
+    existing.remove();
+    button.textContent = 'View project details';
+    return;
+  }
+  const panel = document.createElement('div');
+  panel.className = 'detail';
+  panel.setAttribute('aria-live', 'polite');
+  button.textContent = 'Hide project details';
+  const heading = addText(panel, 'h3', 'Project details');
+  heading.style.marginTop = '0';
   const rows = [
     ['Description', ['description', 'title', 'name']],
     ['Borough / authority', ['lpa_name', 'borough', 'local_authority', 'authority', 'area']],
     ['Application reference', ['lpa_app_no', 'application_reference', 'reference', 'application_ref']],
     ['Address', ['site_address', 'address', 'postcode']],
+    ['Postcode', ['postcode']],
     ['Application type', ['application_type', 'type']],
     ['Decision', ['decision']],
-    ['Decision / status', ['status', 'application_status']],
+    ['Status', ['status', 'application_status']],
     ['Application date', ['application_date', 'date_received']],
     ['Decision date', ['decision_date']],
     ['Last updated', ['last_updated']],
-    ['Applicant', ['applicant_name', 'contact_name']],
-    ['Applicant company', ['applicant_company', 'company_name', 'organisation']],
-    ['Planning agent', ['agent_name']],
-    ['Agent company', ['agent_company']],
+    ['Applicant / contact name', ['applicant_name', 'contact_name', 'agent_name']],
+    ['Company', ['applicant_company', 'agent_company', 'company_name', 'organisation']],
     ['Architect / designer', ['architect_name', 'designer_name']],
     ['Architect / design company', ['architect_company', 'designer_company']],
-    ['Planning officer', ['planning_officer']],
     ['Public email', ['agent_email', 'contact_email', 'applicant_email']],
     ['Public phone', ['agent_phone', 'contact_phone', 'applicant_phone']]
   ];
   rows.forEach(([label, keys]) => {
-    const value = firstValue(record, keys);
+    const value = firstValue(record.public_contact && typeof record.public_contact === 'object'
+      ? { ...record, ...record.public_contact } : record, keys);
     if (value) {
       const p = document.createElement('p');
       addText(p, 'strong', label + ': ');
       p.appendChild(document.createTextNode(value));
-      projectDetail.appendChild(p);
+      panel.appendChild(p);
     }
   });
-  const lat = firstValue(record, ['latitude', 'lat']);
-  const lon = firstValue(record, ['longitude', 'lon', 'lng']);
-  const address = firstValue(record, ['site_address', 'address', 'postcode']);
-  let mapUrl = '';
-  if (lat && lon && Number.isFinite(Number(lat)) && Number.isFinite(Number(lon))) {
-    mapUrl = 'https://www.google.com/maps?q=' + encodeURIComponent(lat + ',' + lon);
-  } else if (address) {
-    mapUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address);
+  const contacts = getContact(record);
+  if (!contacts.length) {
+    addText(panel, 'p', 'No public contact details were supplied with this record. Check the official council planning record for a published agent or company contact; private contact details are not guessed.');
   }
-  if (mapUrl) {
+  const address = firstValue(record, ['site_address', 'address', 'postcode']);
+  const boroughName = getBorough(record);
+  const description = getDescription(record);
+  const mapQuery = [address, description, boroughName, 'London'].filter(Boolean).join(', ');
+  if (mapQuery) {
     const p = document.createElement('p');
     const a = document.createElement('a');
-    a.href = mapUrl;
+    a.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(mapQuery);
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
-    a.textContent = 'View site on map';
+    a.textContent = address ? 'View location on map' : 'Search approximate location on map';
     p.appendChild(a);
-    projectDetail.appendChild(p);
+    panel.appendChild(p);
+    if (!address) addText(panel, 'p', 'The record has no address or postcode, so the map search is approximate and may not identify the exact property.');
   }
   const source = getSource(record);
   if (source) {
@@ -358,21 +365,23 @@ function showDetails(record) {
     a.rel = 'noopener noreferrer';
     a.textContent = 'Open official/source planning record';
     p.appendChild(a);
-    projectDetail.appendChild(p);
+    panel.appendChild(p);
+  } else {
+    addText(panel, 'p', 'No direct planning-record URL was supplied by the source for this entry. Search the application reference on the relevant council planning website.');
   }
   const documentKeys = ['documents_url', 'plans_url', 'drawings_url', 'documents', 'plans', 'drawings'];
   const links = [];
   documentKeys.forEach(key => {
-    const value = text(record[key]);
+    const value = record[key];
     if (!value) return;
-    if (/^https?:\/\//i.test(value)) links.push({label:key.replace(/_/g, ' '),url:value});
-    else if (Array.isArray(record[key])) record[key].forEach(item => {
-      const url = typeof item === 'string' ? item : firstValue(item, ['url', 'href', 'link']);
-      if (/^https?:\/\//i.test(url)) links.push({label:firstValue(item, ['title', 'name']) || key.replace(/_/g, ' '),url});
+    if (typeof value === 'string' && /^https?:\/\//i.test(value)) links.push({label:key.replace(/_/g, ' '),url:value});
+    else if (Array.isArray(value)) value.forEach(item => {
+      const url = typeof item === 'string' ? item : firstValue(item || {}, ['url', 'href', 'link']);
+      if (/^https?:\/\//i.test(url)) links.push({label:firstValue(item || {}, ['title', 'name']) || key.replace(/_/g, ' '),url});
     });
   });
   if (links.length) {
-    addText(projectDetail, 'h3', 'Published plans and documents');
+    addText(panel, 'h4', 'Published plans and documents');
     links.forEach(item => {
       const p = document.createElement('p');
       const a = document.createElement('a');
@@ -381,12 +390,13 @@ function showDetails(record) {
       a.rel = 'noopener noreferrer';
       a.textContent = item.label;
       p.appendChild(a);
-      projectDetail.appendChild(p);
+      panel.appendChild(p);
     });
   } else {
-    addText(projectDetail, 'p', 'No direct plans or document links were supplied in this lead record. Open the official planning record to check published documents.');
+    addText(panel, 'p', 'No direct plan or drawing links were supplied. Check the council record for published documents.');
   }
-  addText(projectDetail, 'p', 'Only use contact details published in the record. Verify the application and decision with the council before acting.');
+  addText(panel, 'p', 'Planning signals are not confirmed jobs. Verify the record before contacting a publicly listed business or professional.');
+  card.appendChild(panel);
 }
 search.addEventListener('input', () => { currentPage = 1; render(); });
 borough.addEventListener('change', () => { currentPage = 1; render(); });
