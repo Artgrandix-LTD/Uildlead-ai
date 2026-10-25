@@ -20,16 +20,18 @@ jobs:
       - name: Get repository files
         uses: actions/checkout@v4
 
-      - name: Check planning data source
-        run: |
-          mkdir -p leads
-          echo "BuildLead AI scan started at $(date -u +%FT%TZ)" >> leads/scan-log.txt
-          echo "Planning data connector needs to be configured before real leads can be collected." >> leads/scan-log.txt
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-      - name: Save scan log
+      - name: Scan public planning data
+        run: python scripts/scan_planning.py
+
+      - name: Save scan results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add leads/scan-log.txt
-          git diff --cached --quiet || git commit -m "Update lead scan log"
+          git add leads/latest-leads.json leads/scan-log.txt
+          git diff --cached --quiet || git commit -m "Update London planning signals"
           git push
