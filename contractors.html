@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173b34">
+<meta name="description" content="BuildLead contractor portal: explore public London planning signals and learn about upcoming verified customer leads.">
+<title>For Contractors | BuildLead</title>
+<style>
+:root{--ink:#172b26;--green:#176b52;--mint:#c7f4df;--paper:#f5f7f2;--line:#e0e8df;--muted:#66756d;--gold:#f2c46d}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:radial-gradient(ellipse at 90% 0%,#2d7b5f,transparent 38%),linear-gradient(125deg,#102e27,#20644b);color:#fff;padding:28px max(18px,calc((100% - 1050px)/2)) 38px}
+nav{display:flex;gap:15px;flex-wrap:wrap;margin-bottom:30px}nav a{color:#d8f5e5;text-decoration:none;font-weight:700;font-size:14px}.brand{font-size:12px;letter-spacing:2px;color:#b7f0d4;font-weight:800}h1{font-size:clamp(30px,5vw,48px);line-height:1.12;letter-spacing:-1.5px;max-width:750px;margin:10px 0 14px}header p{max-width:700px;color:#e0eee6;font-size:17px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.btn{display:inline-flex;padding:11px 15px;border-radius:11px;text-decoration:none;font-weight:800}.primary{background:var(--mint);color:#143d2f}.secondary{border:1px solid #ffffff55;color:#fff}
+main{max-width:1050px;margin:24px auto;padding:0 16px}section{background:#fff;border:1px solid #e6ece5;border-radius:18px;padding:clamp(18px,3vw,26px);margin-bottom:17px;box-shadow:0 8px 26px #173d2a08}.eyebrow{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;font-weight:850;color:#287454}h2{font-size:22px;letter-spacing:-.5px;margin:4px 0 8px}p{color:var(--muted)}.notice{background:#fff8e8;border:1px solid #f0dfb7;color:#6e5726;padding:13px 15px;border-radius:12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.feature{background:#f6faf6;border:1px solid var(--line);border-radius:14px;padding:16px}.feature h3{font-size:16px;margin:0 0 5px}.feature p{font-size:14px;margin:0}.filters{display:grid;grid-template-columns:2fr 1fr;gap:12px}label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,select{width:100%;padding:12px;border:1px solid #d7e1d9;border-radius:10px;font:inherit;background:#fcfdfb;color:var(--ink)}.card{border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;background:#fcfdfb}.card h3{margin:0 0 5px;font-size:16px}.meta{font-size:13px;color:var(--muted);margin:5px 0}.tag{display:inline-block;background:#e2f7eb;color:#176344;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:800}.empty{padding:18px;background:#f6faf6;border-radius:12px;color:var(--muted)}footer{text-align:center;color:#758279;font-size:13px;padding:25px 15px}a{color:var(--green)}button{padding:10px 14px;border:0;border-radius:10px;background:var(--green);color:white;font-weight:800;cursor:pointer}@media(max-width:600px){header{padding:22px 18px 30px}.filters{grid-template-columns:1fr}main{margin:16px auto}}
+</style>
+</head>
+<body>
+<header>
+<nav><a href="./">← BuildLead home</a><a href="./lead-request.html">For homeowners</a><a href="./privacy.html">Privacy notice</a></nav>
+<div class="brand">BUILDLEAD · CONTRACTOR PORTAL</div>
+<h1>Find your next construction opportunity in London.</h1>
+<p>Explore public planning activity by area and project details. BuildLead is developing a separate marketplace for verified homeowner requests, with transparent pricing and contractor access.</p>
+<div class="actions"><a class="btn primary" href="#planning">Explore planning signals</a><a class="btn secondary" href="#marketplace">How customer leads will work</a></div>
+</header>
+<main>
+<section>
+<div class="eyebrow">Important distinction</div><h2>Planning signals are not customer enquiries</h2>
+<p class="notice">The listings below come from public planning records. They do not mean the owner has asked for a quote, agreed to be contacted, or is ready to hire a contractor. Verify each record and follow applicable privacy and marketing rules before outreach.</p>
+</section>
+<section id="planning">
+<div class="eyebrow">Public data · Search and filter</div><h2>London planning opportunities</h2>
+<p>Search public records for possible upcoming building work. Details depend on the available planning record.</p>
+<div class="filters"><div><label for="q">Search records</label><input id="q" type="search" placeholder="Project, address, borough or status"></div><div><label for="borough">Borough / authority</label><select id="borough"><option value="">All areas</option></select></div></div>
+<p id="feedStatus" aria-live="polite">Loading planning records…</p><div id="list"></div>
+</section>
+<section id="marketplace">
+<div class="eyebrow">Verified customer lead marketplace</div><h2>Customer projects and paid lead access</h2>
+<div class="grid">
+<div class="feature"><h3>1. Homeowner request</h3><p>A homeowner submits their project and explicitly agrees to relevant contractor contact.</p></div>
+<div class="feature"><h3>2. Review and verification</h3><p>BuildLead reviews the request and verifies contact details before offering it to contractors.</p></div>
+<div class="feature"><h3>3. Transparent access</h3><p>Contractors will see project details, service area, lead price and sharing limits before choosing whether to purchase.</p></div>
+</div>
+<p class="notice" style="margin-top:14px"><strong>Not live yet:</strong> contractor accounts, verified customer-project listings, checkout/payment, lead claiming and refunds are not implemented. No payment is being taken on this page. Do not treat planning records as paid customer leads.</p>
+</section>
+<section>
+<div class="eyebrow">Get ready</div><h2>Prepare your contractor profile</h2>
+<p>Before marketplace access opens, contractors will need to provide their business name, trades, London service areas, business contact details and any relevant registration or insurance information. Do not send sensitive documents until a secure onboarding process is available.</p>
+<p><a href="./">Return to the BuildLead dashboard</a> · <a href="./privacy.html">Read the privacy notice</a></p>
+</section>
+</main>
+<footer>BuildLead · London · Public planning records are potential signals, not confirmed jobs.</footer>
+<script>
+'use strict';
+const q=document.getElementById('q'), borough=document.getElementById('borough'), list=document.getElementById('list'), feedStatus=document.getElementById('feedStatus');
+let records=[];
+function txt(v){return v==null?'':String(v).trim()}
+function pick(r,keys){for(const k of keys){const v=txt(r[k]);if(v)return v}return ''}
+function safeUrl(v){try{const u=new URL(v);return ['https:','http:'].includes(u.protocol)?u.href:''}catch(_){return ''}}
+function getBorough(r){return pick(r,['lpa_name','borough','local_authority','authority','area'])||'Area not specified'}
+function render(){
+ const term=q.value.trim().toLowerCase(), area=borough.value;
+ const matches=records.filter(r=>(!area||getBorough(r)===area)&&(!term||JSON.stringify(r).toLowerCase().includes(term)));
+ list.replaceChildren();
+ if(!matches.length){list.innerHTML='<div class="empty">No matching planning records were found in the available feed. Try another search or area.</div>';return}
+ matches.slice(0,40).forEach(r=>{
+  const card=document.createElement('article');card.className='card';
+  const title=document.createElement('h3');title.textContent=pick(r,['description','address','site_address','title','name'])||'Potential planning project';card.appendChild(title);
+  const meta=document.createElement('p');meta.className='meta';meta.textContent=[getBorough(r),pick(r,['application_type','type']),pick(r,['status','application_status','decision'])].filter(Boolean).join(' · ');card.appendChild(meta);
+  const tag=document.createElement('span');tag.className='tag';tag.textContent='Public planning signal · not a confirmed job';card.appendChild(tag);
+  const source=safeUrl(pick(r,['url','link','source_url','planning_record_url']));
+  if(source){const p=document.createElement('p');p.style.marginBottom='0';const a=document.createElement('a');a.href=source;a.target='_blank';a.rel='noopener noreferrer';a.textContent='View official record ↗';p.appendChild(a);card.appendChild(p)}
+  list.appendChild(card);
+ });
+ if(matches.length>40){const p=document.createElement('p');p.className='meta';p.textContent='Showing 40 of '+matches.length+' matching records. Refine your search to narrow the list.';list.appendChild(p)}
+}
+q.addEventListener('input',render);borough.addEventListener('change',render);
+async function load(){
+ try{
+  const response=await fetch('./leads/latest-leads.json',{cache:'no-store'});
+  if(!response.ok)throw new Error('feed unavailable');
+  const data=await response.json();
+  records=Array.isArray(data)?data:(Array.isArray(data.leads)?data.leads:Array.isArray(data.records)?data.records:[]);
+  if(!records.length)throw new Error('no records');
+  [...new Set(records.map(getBorough))].sort().forEach(name=>{const o=document.createElement('option');o.value=name;o.textContent=name;borough.appendChild(o)});
+  feedStatus.textContent=records.length+' public planning records loaded. These are not verified customer enquiries.';
+  render();
+ }catch(_){feedStatus.textContent='The planning feed is temporarily unavailable. Please try again later.';list.innerHTML='<div class="empty">No live records could be loaded right now. The paid customer-lead marketplace is not live yet.</div>'}
+}
+load();
+</script>
+</body>
+</html>
