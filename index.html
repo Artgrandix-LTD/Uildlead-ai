@@ -5,31 +5,82 @@
 <meta name="description" content="BuildLead connects London property owners with construction professionals.">
 <title>BuildLead | London Construction Projects</title>
 <link rel="icon" type="image/svg+xml" href="./assets/buildlead-logo.svg">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <style>
-:root{--navy:#071b2b;--blue:#123b59;--yellow:#ffc629;--paper:#f3f6fa;--ink:#10263b;--muted:#64748b}
+:root{--navy:#071b2b;--blue:#123b59;--yellow:#ffc629;--paper:#f3f6fa;--ink:#10263b;--muted:#64748b;--line:#dce5ee}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--paper);color:var(--ink);line-height:1.6}
-header{background:linear-gradient(120deg,rgba(7,27,43,.96),rgba(18,59,89,.86)),url(https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=80) center/cover;color:white;padding:26px max(22px,calc((100% - 1040px)/2)) 78px}
+header{background:linear-gradient(120deg,rgba(7,27,43,.96),rgba(18,59,89,.86)),url(https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=80) center/cover;color:white;padding:26px max(22px,calc((100% - 1100px)/2)) 78px}
 .brand img{display:block;width:min(250px,70vw);height:auto;max-height:70px;object-fit:contain}.topbar{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
 nav{display:flex;gap:18px;flex-wrap:wrap}nav a{color:white;text-decoration:none;font-weight:750;font-size:14px}
 .hero{padding:58px 0 0;max-width:720px}.eyebrow{color:var(--yellow);font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
 h1{font-size:clamp(36px,6vw,60px);line-height:1.06;letter-spacing:-1.8px;margin:14px 0 18px}header p{font-size:18px;color:#e2eaf0;max-width:620px;margin:0 0 26px}
 .actions{display:flex;gap:12px;flex-wrap:wrap}.btn{display:inline-block;padding:13px 18px;border-radius:11px;text-decoration:none;font-weight:800}.primary{background:var(--yellow);color:var(--navy)}.secondary{border:1px solid #ffffff70;color:white;background:#ffffff0c}
-main{max-width:1040px;margin:-28px auto 0;padding:0 20px;position:relative}.panel{background:white;border:1px solid #e2e8f0;border-radius:18px;padding:clamp(22px,4vw,34px);box-shadow:0 12px 32px #10263b0b}
+main{max-width:1100px;margin:-28px auto 0;padding:0 20px;position:relative}.panel{background:white;border:1px solid #e2e8f0;border-radius:18px;padding:clamp(22px,4vw,34px);box-shadow:0 12px 32px #10263b0b;margin-bottom:18px}
 .panel h2{margin:0 0 8px;font-size:25px;letter-spacing:-.5px}.panel>p{color:var(--muted);margin:0 0 22px}
 .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.choice{border:1px solid #dce5ee;border-radius:14px;padding:22px;background:white}
 .choice h3{margin:0 0 7px;font-size:19px}.choice p{font-size:14px;color:var(--muted);margin:0 0 18px}.choice a{display:inline-block;color:var(--blue);font-weight:800;text-decoration:none}
+.project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}.project-card{border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff}.project-card h3{margin:0 0 8px;text-transform:capitalize}.project-card p{margin:6px 0;color:var(--muted);font-size:14px}.pill{display:inline-block;background:#edf4f8;border-radius:99px;padding:4px 9px;font-size:12px;font-weight:800;color:#234a65}.locked{margin-top:12px;padding:12px;border-radius:10px;background:#fff8e8;border:1px solid #f0dfb7;font-size:13px}.project-actions{margin-top:12px}
+#projectMap{height:390px;border-radius:14px;border:1px solid var(--line);overflow:hidden}.status{color:var(--muted);font-size:14px;white-space:pre-wrap}.privacy{font-size:13px!important;color:#6b5a2d!important;background:#fff8e8;border:1px solid #f0dfb7;border-radius:10px;padding:12px}
 footer{text-align:center;padding:28px 16px 34px;color:var(--muted);font-size:13px}
-@media(max-width:600px){header{padding:22px 20px 65px}.topbar{align-items:flex-start}.hero{padding-top:44px}main{padding:0 12px}.choices{grid-template-columns:1fr}.panel{padding:22px 18px}nav{gap:12px}}
+@media(max-width:600px){header{padding:22px 20px 65px}.topbar{align-items:flex-start}.hero{padding-top:44px}main{padding:0 12px}.choices{grid-template-columns:1fr}.panel{padding:22px 18px}nav{gap:12px}#projectMap{height:320px}}
 </style></head><body>
 <header><div class="topbar">
 <a class="brand" href="./" aria-label="BuildLead home"><img src="./assets/buildlead-logo.svg" width="250" height="64" alt="BuildLead"></a>
 <nav aria-label="Main navigation"><a href="./lead-request.html?role=landlord">For customers</a><a href="./marketplace.html?role=contractor">For contractors</a></nav></div>
 <div class="hero"><div class="eyebrow">London construction marketplace</div>
 <h1>Find the right connection for your next project.</h1>
-<p>BuildLead brings property owners and construction professionals together through a straightforward project marketplace.</p>
-<div class="actions"><a class="btn primary" href="./choose-role.html">Get started ↗</a><a class="btn secondary" href="./marketplace.html?role=contractor">Contractor sign in ↗</a></div></div></header>
-<main><section class="panel" aria-labelledby="start-heading"><h2 id="start-heading">Get started with BuildLead</h2>
+<p>Explore available construction projects across London. Customer contact details stay private until an approved contractor completes payment.</p>
+<div class="actions"><a class="btn primary" href="./lead-request.html?role=landlord">Submit a project ↗</a><a class="btn secondary" href="./marketplace.html?role=contractor">Contractor sign in ↗</a></div></div></header>
+<main>
+<section class="panel" aria-labelledby="projects-heading"><h2 id="projects-heading">Available projects</h2>
+<p>Browse project types, approximate postcode areas, budget ranges and start timing.</p>
+<p class="privacy">Privacy protection: names, phone numbers, email addresses, full postcodes and private project details are hidden on this page. Contact information should only be released by the secure paid-purchase process.</p>
+<div id="homepageProjectStatus" class="status" role="status" aria-live="polite">Loading project previews…</div>
+<div id="homepageProjects" class="project-grid"></div>
+<div class="project-actions"><a class="btn primary" href="./marketplace.html?role=contractor">Contractor access & payment ↗</a></div>
+</section>
+<section class="panel" aria-labelledby="map-heading"><h2 id="map-heading">Project map</h2><p>Markers show an approximate London postcode district area, not a property's exact location.</p><div id="projectMap" role="img" aria-label="Map showing approximate areas of available projects"></div><div id="mapStatus" class="status" aria-live="polite"></div></section>
+<section class="panel" aria-labelledby="start-heading"><h2 id="start-heading">Get started with BuildLead</h2>
 <p>Choose the option that fits what you need.</p><div class="choices">
 <article class="choice"><h3>I have a project</h3><p>Share a few details about your property work so your request can be reviewed.</p><a href="./lead-request.html?role=landlord">Submit a project request →</a></article>
-<article class="choice"><h3>I'm a contractor</h3><p>Sign in or create an account to access the contractor marketplace.</p><a href="./marketplace.html?role=contractor">Open the marketplace →</a></article>
-</div></section></main><footer>© BuildLead · London</footer></body></html>
+<article class="choice"><h3>I'm a contractor</h3><p>Sign in or create an account to access the contractor marketplace and paid contact details.</p><a href="./marketplace.html?role=contractor">Open the marketplace →</a></article>
+</div></section></main><footer>© BuildLead · London · Contact details protected until secure purchase</footer>
+<script src="./supabase-config.js"></script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const statusEl=document.getElementById('homepageProjectStatus'), list=document.getElementById('homepageProjects'), mapStatus=document.getElementById('mapStatus');
+const map = window.L ? L.map('projectMap').setView([51.49,-0.13],10) : null;
+if(map){L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap contributors'}).addTo(map)}
+const areas={
+ SW:[51.455,-0.17],SE:[51.47,-0.06],NW:[51.55,-0.19],N:[51.56,-0.12],E:[51.52,0.02],W:[51.51,-0.29],WC:[51.51,-0.13],EC:[51.52,-0.08],CR:[51.37,-0.1],SM:[51.36,-0.19],KT:[51.39,-0.29],BR:[51.40,-0.02],DA:[51.45,0.15],RM:[51.57,0.18],IG:[51.56,0.08],EN:[51.65,-0.08],HA:[51.58,-0.34],UB:[51.53,-0.45],TW:[51.45,-0.34],WD:[51.61,-0.39],E:[51.52,0.02]
+};
+function escapeText(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function label(value){return String(value||'Not specified').replaceAll('_',' ')}
+if(!window.BUILDLEAD_SUPABASE?.url||!window.BUILDLEAD_SUPABASE?.publishableKey){statusEl.textContent='Project previews will appear after the Supabase project is configured and the public preview migration is applied.';mapStatus.textContent='Map awaits the project preview data.'}
+else {
+ const supabase=createClient(window.BUILDLEAD_SUPABASE.url,window.BUILDLEAD_SUPABASE.publishableKey);
+ const {data,error}=await supabase.rpc('public_project_previews');
+ if(error){statusEl.textContent='Project previews are not available yet. Apply the public project preview migration in Supabase. '+error.message;mapStatus.textContent='Map data is unavailable until the migration is applied.'}
+ else if(!data?.length){statusEl.textContent='No currently available projects to display.';mapStatus.textContent='No available project markers.'}
+ else {
+  statusEl.textContent=data.length+' project preview(s) available. Contact details are hidden.';
+  for(const p of data){
+   const card=document.createElement('article');card.className='project-card';
+   card.innerHTML='<span class="pill">Available project</span><h3>'+escapeText(label(p.project_type))+'</h3><p><strong>Area:</strong> '+escapeText(p.postcode_area||'London area')+'</p><p><strong>Budget:</strong> '+escapeText(label(p.budget_range))+'</p><p><strong>Start:</strong> '+escapeText(label(p.start_timing))+'</p><div class="locked">🔒 Customer name and contact details hidden. Approved contractors can unlock them after successful payment.</div>';
+   list.appendChild(card);
+  }
+  if(map){
+   const coords=[];
+   for(const p of data){
+    const prefix=String(p.map_area||'').toUpperCase();
+    const pos=areas[prefix]||[51.5072,-0.1276];
+    const marker=L.marker(pos).addTo(map);
+    marker.bindPopup('<strong>'+escapeText(label(p.project_type))+'</strong><br>Approximate area: '+escapeText(p.postcode_area||'London')+'<br>Contact details hidden until paid access.');
+    coords.push(pos);
+   }
+   if(coords.length>1)map.fitBounds(coords,{padding:[24,24],maxZoom:11});
+   mapStatus.textContent='Showing approximate area markers only. Multiple projects in the same district may overlap.';
+  }else mapStatus.textContent='Map library did not load. Project cards are still available above.';
+ }
+}
+</script></body></html>
