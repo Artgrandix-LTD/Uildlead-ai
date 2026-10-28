@@ -26,10 +26,10 @@ as $$
     and l.contact_verified = true
     and l.sharing_consent = true
     and l.marketplace_status = 'open'
-    and exists (
-      select 1 from public.project_purchases p
+    and (
+      select count(*) from public.project_purchases p
       where p.project_id = l.id and p.payment_status = 'paid'
-    ) is false
+    ) < l.max_contractors
   order by l.created_at desc
   limit 100
 $$;
