@@ -64,3 +64,39 @@ Before enabling it:
 - After a paid contractor reports a deal, the lead enters `deal_pending` and is removed from open listings. The landlord must confirm to close it; if the landlord rejects the report, the project returns to `open`.
 - Customer contact data must only be returned by a separate authenticated server-side/RPC function after a confirmed paid purchase. Do not grant broad SELECT access to `customer_leads`.
 - Do not advertise the marketplace as fully live until migrations, payment webhook, approval workflow, contact-release logic, privacy review, and end-to-end tests are complete.
+
+
+## Stripe payments for ARTGRANDIX LTD (initial one-off lead checkout)
+
+The marketplace checkout is designed for ARTGRANDIX LTD as the legal operator and settlement business. The first payment model is a one-time GBP payment per verified project lead. Recurring contractor subscriptions and Stripe Connect contractor payouts are separate follow-on work and are not enabled by this integration.
+
+### Required setup
+
+1. Apply `supabase/migrations/202611110001_stripe_contact_release.sql` after both marketplace migrations. This adds the paid-only contact-release RPC and the server-only payment confirmation RPC.
+2. Deploy the existing Edge Functions:
+   ```sh
+   supabase functions deploy create-checkout-session
+   supabase functions deploy stripe-webhook
+   ```
+3. In Supabase Dashboard → Edge Functions → Secrets, configure:
+   - `STRIPE_SECRET_KEY`: Stripe **test-mode** secret key (`sk_test_...`) only for initial testing.
+   - `STRIPE_WEBHOOK_SECRET`: signing secret for the webhook endpoint created in Stripe.
+   - `PAYMENTS_MODE`: `test`.
+   - `PAYMENTS_ENABLED`: leave `false` until test setup and verification are complete; set `true` only when ready to test checkout.
+   - `SITE_URL`: `https://artgrandix-ltd.github.io/Uildlead-ai`.
+   Supabase supplies its project URL and standard server-side keys to Edge Functions. Never copy a service-role key into GitHub or browser code.
+4. In Stripe Dashboard test mode, add a webhook endpoint:
+   `https://lwbvnqelvgqcxcupzuvv.supabase.co/functions/v1/stripe-webhook`
+   Subscribe to `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`, and `charge.refunded`. Copy the endpoint signing secret into the Supabase secret `STRIPE_WEBHOOK_SECRET`.
+5. Run end-to-end tests using Stripe test cards and separate approved contractor accounts. Verify successful payment, failed/expired checkout, duplicate webhook delivery, refund, contractor cap, purchase history, and paid-only contact release.
+6. The current SQL uses a **test placeholder price of £25.00** per lead. Confirm the commercial price before enabling any live payments. Do not switch to live keys until ARTGRANDIX LTD's Stripe verification, website disclosures, refund policy, tax/accounting treatment, privacy notice, and test results have been reviewed.
+
+### Payment safety
+
+- Checkout is created server-side from the authenticated user's session and database purchase record.
+- The signed Stripe webhook verifies payment before changing purchase status.
+- The database confirmation RPC is service-role-only and locks the project row before enforcing the contractor purchase cap.
+- If a payment succeeds after the project can no longer be allocated, the webhook attempts an idempotent automatic refund.
+- Customer contact details are released only through `get_paid_project_contact` to the approved contractor who owns the paid purchase.
+- The marketplace browser never receives Stripe secret keys or marks a purchase as paid.
+- GitHub Pages only hosts the public UI; Supabase Edge Functions and the Supabase database perform payment and access-control operations.
