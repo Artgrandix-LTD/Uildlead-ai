@@ -1,8 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@17.7.0?target=deno";
 
+const siteUrl = Deno.env.get("SITE_URL") ?? "https://artgrandix-ltd.github.io/Uildlead-ai";
+const siteOrigin = new URL(siteUrl).origin;
 const cors = {
-  "Access-Control-Allow-Origin": Deno.env.get("SITE_URL") ?? "https://artgrandix-ltd.github.io",
+  "Access-Control-Allow-Origin": siteOrigin,
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Vary": "Origin",
@@ -20,9 +22,21 @@ Deno.serve(async (req) => {
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-  const siteUrl = Deno.env.get("SITE_URL");
-  if (!url || !anonKey || !serviceKey || !stripeKey || !siteUrl) {
+  if (!url || !anonKey || !serviceKey || !stripeKey) {
     return reply({ error: "Checkout is not configured on the server" }, 503);
+  }
+  const paymentMode = Deno.env.get("PAYMENTS_MODE") ?? "test";
+  if (Deno.env.get("PAYMENTS_ENABLED") !== "true") {
+    return reply({ error: "Checkout is disabled until Stripe test configuration is complete." }, 503);
+  }
+  if (paymentMode === "test" && !stripeKey.startsWith("sk_test_")) {
+    return reply({ error: "Test mode requires a Stripe test secret key." }, 503);
+  }
+  if (paymentMode === "live" && !stripeKey.startsWith("sk_live_")) {
+    return reply({ error: "Live mode requires a Stripe live secret key." }, 503);
+  }
+  if (paymentMode !== "test" && paymentMode !== "live") {
+    return reply({ error: "Invalid payment mode." }, 503);
   }
 
   try {
