@@ -30,16 +30,26 @@ footer{background:#040d19;color:#9eb2c6;padding:38px 0;border-top:1px solid #203
 @media(max-width:600px){.shell{width:min(100% - 28px,1180px)}header{padding-top:16px}.topbar{align-items:flex-start}.brand img{width:155px}.nav{gap:10px;justify-content:flex-end}.nav a{font-size:11px}.nav a:nth-child(2),.nav a:nth-child(3){display:none}.nav .nav-cta{padding:9px 11px}.hero{padding-top:48px}.hero h1{letter-spacing:-1.7px}.hero p{font-size:15px}.mini-map{height:190px}.trust-strip{grid-template-columns:1fr;margin-top:-24px}.project-grid,.feature-grid,.steps,.roles,.pricing-grid,.faq{grid-template-columns:1fr}.section{padding-top:52px}.surface{padding:17px}#projectMap{height:320px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 
-/* Full-page navy treatment: every section, including the final contact panel */
-:root{color-scheme:dark;--paper:#081b34;--navy:#081b34;--navy2:#0b2340}
-html,body{min-height:100%;background:#081b34!important}
-body{background:#081b34!important;color:#edf4fb}
-header{background:linear-gradient(135deg,#06152b 0%,#081b34 55%,#0b2340 100%)!important}
-main{background:#081b34!important}
-main>.shell{background:transparent!important}
-.section,.section-head{background:transparent!important}
-.surface,#contact .surface{background:linear-gradient(145deg,#102b47 0%,#0b2038 100%)!important;border-color:#294967;color:#edf4fb}
-.trust-item,.project-card,.feature,.step,.role,.price-card,.faq details{background:linear-gradient(145deg,#15334f 0%,#0b2037 100%)!important}
+/* Strong continuous navy background from Available Projects to the footer */
+:root{color-scheme:dark}
+html,body{background:#081b34!important}
+body{background:#081b34!important}
+main,main>.shell,#projects,#map,#features,#how-it-works,#audiences,#pricing,#faq,#contact,
+main section,main section>div,main .section-head{background-color:#081b34!important}
+main .surface,#projects .surface,#map .surface,#contact .surface{
+ background:#102943!important;background-image:linear-gradient(145deg,#102b47 0%,#0b2038 100%)!important;
+ border-color:#294967!important;color:#edf4fb!important
+}
+.trust-strip,.trust-item,.project-grid,.project-card,.feature-grid,.feature,.steps,.step,.roles,.role,
+.pricing-grid,.price-card,.faq,.faq details{
+ background-color:#0b2038!important
+}
+.trust-item,.project-card,.feature,.step,.role,.price-card,.faq details{
+ background-image:linear-gradient(145deg,#15334f 0%,#0b2037 100%)!important
+}
+#contact .surface{background-image:linear-gradient(120deg,#153b59,#10243b)!important}
+#projects .btn[style],#projects .btn{background:#173c5b!important;color:#edf4fb!important}
+#projects .btn.primary,#projects .btn.nav-cta{background:linear-gradient(135deg,#ffc65b,#f29a18)!important;color:#102035!important}
 footer{background:#06152a!important}
 </style>
 </head>
