@@ -53,8 +53,27 @@ Deno.serve(async (req) => {
         });
         if (confirmError) throw confirmError;
         if (confirmed !== true) {
-          // Refunds are handled manually in Stripe dashboard; never release contacts if the project cap was reached.
-          console.error("Paid session could not be allocated within project cap", purchaseId);
+          // If the project became unavailable or reached its buyer cap after checkout,
+          // automatically refund the captured payment rather than leaving an unfulfilled charge.
+          if (!paymentIntentId) throw new Error("Paid Checkout session has no payment intent to refund");
+          await stripe.refunds.create(
+            {
+              payment_intent: paymentIntentId,
+              metadata: { purchase_id: purchaseId, reason: "project_capacity_or_availability" },
+            },
+            { idempotencyKey: "buildlead-capacity-refund-" + purchaseId },
+          );
+          const { error: refundUpdateError } = await admin.from("project_purchases")
+            .update({
+              payment_status: "refunded",
+              payment_provider: "stripe",
+              provider_payment_intent_id: paymentIntentId,
+              refunded_at: new Date().toISOString(),
+            })
+            .eq("id", purchaseId)
+            .eq("provider_checkout_id", session.id);
+          if (refundUpdateError) throw refundUpdateError;
+          console.warn("Payment automatically refunded because the lead could not be allocated", purchaseId);
         }
       }
     } else if (event.type === "checkout.session.async_payment_failed" || event.type === "checkout.session.expired") {
