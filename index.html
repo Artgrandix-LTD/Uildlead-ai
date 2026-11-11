@@ -30,14 +30,16 @@ footer{background:#040d19;color:#9eb2c6;padding:38px 0;border-top:1px solid #203
 @media(max-width:600px){.shell{width:min(100% - 28px,1180px)}header{padding-top:16px}.topbar{align-items:flex-start}.brand img{width:155px}.nav{gap:10px;justify-content:flex-end}.nav a{font-size:11px}.nav a:nth-child(2),.nav a:nth-child(3){display:none}.nav .nav-cta{padding:9px 11px}.hero{padding-top:48px}.hero h1{letter-spacing:-1.7px}.hero p{font-size:15px}.mini-map{height:190px}.trust-strip{grid-template-columns:1fr;margin-top:-24px}.project-grid,.feature-grid,.steps,.roles,.pricing-grid,.faq{grid-template-columns:1fr}.section{padding-top:52px}.surface{padding:17px}#projectMap{height:320px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 
-/* Unified full-page midnight blue background */
-:root{--paper:#081b34;--navy:#081b34;--navy2:#0b2340}
-html,body{background:#081b34!important}
+/* Full-page navy treatment: every section, including the final contact panel */
+:root{color-scheme:dark;--paper:#081b34;--navy:#081b34;--navy2:#0b2340}
+html,body{min-height:100%;background:#081b34!important}
 body{background:#081b34!important;color:#edf4fb}
-header{background:#081b34!important;border-bottom:1px solid #1d3b5c}
-header:after{opacity:.12}
+header{background:linear-gradient(135deg,#06152b 0%,#081b34 55%,#0b2340 100%)!important}
 main{background:#081b34!important}
-.section{background:transparent}
+main>.shell{background:transparent!important}
+.section,.section-head{background:transparent!important}
+.surface,#contact .surface{background:linear-gradient(145deg,#102b47 0%,#0b2038 100%)!important;border-color:#294967;color:#edf4fb}
+.trust-item,.project-card,.feature,.step,.role,.price-card,.faq details{background:linear-gradient(145deg,#15334f 0%,#0b2037 100%)!important}
 footer{background:#06152a!important}
 </style>
 </head>
@@ -145,7 +147,7 @@ footer{background:#06152a!important}
   </section>
 
   <section class="section" id="contact">
-   <div class="surface" style="background:#eaf0f5">
+   <div class="surface">
     <div class="kicker">Start with BuildLead</div><h2>Have a project or build in London?</h2><p style="color:var(--muted)">Choose the right route and take the next step.</p>
     <div class="actions"><a class="btn dark-btn" href="./lead-request.html?role=landlord">I have a project</a><a class="btn primary" href="./marketplace.html?role=contractor">I'm a contractor</a></div>
    </div>
